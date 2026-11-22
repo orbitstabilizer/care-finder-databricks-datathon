@@ -159,15 +159,22 @@ def why_lines(r, svc):
     return out
 
 
+JUNK_PARTS = {"", "null", "none", "nan", "n/a"}
+
+
 def address(r):
-    addr = r.get("address") or ", ".join(
-        x for x in [r.get("city"), r.get("state"), r.get("postcode")] if x)
-    parts, seen = [], set()
-    for p in (addr or "").split(","):
-        if p.strip() and p.strip().lower() not in seen:
-            seen.add(p.strip().lower())
-            parts.append(p.strip())
-    return ", ".join(parts) or None
+    """Address parts with NULL / 'null' / 'none' / 'nan' / 'n/a' and repeated parts dropped."""
+    def ok(x):
+        return x is not None and str(x).strip().lower() not in JUNK_PARTS
+    def clean(addr):
+        parts, seen = [], set()
+        for p in (addr or "").split(","):
+            if ok(p) and p.strip().lower() not in seen:
+                seen.add(p.strip().lower())
+                parts.append(p.strip())
+        return ", ".join(parts)
+    fallback = ", ".join(str(x) for x in [r.get("city"), r.get("state"), r.get("postcode")] if ok(x))
+    return clean(r.get("address")) or clean(fallback) or None
 
 
 TRUSTED_LOCATION = ("high", "good")   # one rule for "nearest" everywhere
