@@ -12,3 +12,8 @@ data/
 
 # local tool settings
 .claude/settings.local.json
+
+# agent files (kept on disk, not versioned)
+CLAUDE.md
+CONVERSATION_BRIEF.md
+.claude/
