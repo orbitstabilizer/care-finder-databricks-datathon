@@ -503,6 +503,9 @@ def api_district_context(service: str, lat: float | None = None, lon: float | No
     return {**ctx, "hint": hint}
 
 
+HINT_CANDIDATES = 200   # all related facilities within 30 km, nearest first; quotes filter them
+
+
 def _district_hint(cn, service, ctx):
     """Suggestion block, separate from tiers (never changes tier or order). Shown when:
     - the service has a SUPPLY-signal NFHS indicator (config.HINT_SUPPLY_INDICATOR; need indicators
@@ -511,7 +514,9 @@ def _district_hint(cn, service, ctx):
     - no facility is Confirmed for the service within HINT_RADIUS_KM (30 km) of the search point,
     - at least one facility within 30 km is Confirmed or Likely for a related maternity service
       (service_department_map link_type 'implied_by_service', limited to HINT_RELATED_ALLOWED).
-    Lists up to HINT_MAX nearest such facilities with their related tier and one quoted sentence."""
+    Lists up to HINT_MAX nearest such facilities with their related tier and one quoted sentence.
+    A facility with no qualifying quote of its own is skipped (every listed claim must be cited);
+    the search continues further out within 30 km. No cited facility -> no hint."""
     col = HINT_SUPPLY_INDICATOR.get(service)
     lat, lon, nk = ctx.get("point_lat"), ctx.get("point_lon"), ctx.get("nfhs_key")
     if not col or lat is None or not nk:
@@ -525,16 +530,15 @@ def _district_hint(cn, service, ctx):
                if s in HINT_RELATED_ALLOWED and s != service]
     if not related:
         return None
-    facs = q.hint_facilities(cn, related, lat, lon, HINT_RADIUS_KM, HINT_MAX)
+    facs = q.hint_facilities(cn, related, lat, lon, HINT_RADIUS_KM, HINT_CANDIDATES)
     if not facs:
         return None
     head, follow = HINT_TEXT[service]
-    try:
-        quotes = _hint_best_quotes(q.hint_quotes(cn, [f["unique_id"] for f in facs],
-                                                 sorted(HINT_RELATED_ALLOWED)), facs)
-    except Exception as e:   # a missing quote must not drop the hint
-        print(f"HINT quotes failed: {type(e).__name__}: {e}", flush=True)
-        quotes = {}
+    quotes = _hint_best_quotes(q.hint_quotes(cn, [f["unique_id"] for f in facs],
+                                             sorted(HINT_RELATED_ALLOWED)), facs)
+    facs = [f for f in facs if quotes.get(f["unique_id"])][:HINT_MAX]   # cited facilities only
+    if not facs:
+        return None
     items = []
     for f in facs:
         fb = q.is_fallback(f["location_source"])
