@@ -741,6 +741,52 @@ DEDICATED = {
                          r"re:accident\s+(and|&)\s+emergency\s+(department|unit)s?"],
 }
 
+# Procedure services: a sentence that names a specific procedure (or gives a count of procedures,
+# COUNT_RE in build_facility_service.py) counts as "detailed". A bare service name, a department
+# name or a generic operating-theatre line does not. Procedure terms also satisfy the term gate.
+# Hand-checked: caesarean_section, cardiac_surgery. The other 9 are not hand-checked.
+PROCEDURE_HAND_CHECKED = {"caesarean_section", "cardiac_surgery"}
+PROCEDURE = {
+    "caesarean_section": ["lscs", r"re:lower\s+segment\s+ca?esa?r\w*", r"re:ca?esa?r(e|i|ea|ia)n\w*\s+(section|delivery|deliveries|operation|surger\w*)s?",
+                          r"re:c[\s-]?sections?", r"re:caeserean\w*\s+(section|delivery)s?", r"re:elective\s+ca?esa?r\w*",
+                          r"re:emergency\s+ca?esa?r\w*"],
+    "cardiac_surgery": ["cabg", "opcab", "mics", r"re:coronary\s+(artery\s+)?bypass\w*", r"re:bypass\s+(surg\w*|graft\w*)",
+                        r"re:valve\s+(replacement|repair)\w*", r"re:(mitral|aortic|tricuspid)\s+valve\s+\w+", "mvr", "avr", "dvr",
+                        r"re:open[\s-]+heart\s+surg\w*", r"re:beating[\s-]+heart\s+surg\w*", r"re:bentall\w*",
+                        r"re:(asd|vsd)\s+(closure|repair)", r"re:tof\s+repair", r"re:aortic\s+aneurysm\s+repair",
+                        r"re:minimally\s+invasive\s+cardiac\s+surg\w*"],
+    "normal_delivery": [r"re:normal\s+deliver\w*", r"re:vaginal\s+(deliver\w*|birth\w*)", "vbac", r"re:painless\s+(deliver\w*|labou?r)",
+                        r"re:water\s+birth\w*", r"re:epidural\s+(analgesia|for\s+labou?r)"],
+    "joint_replacement": [r"re:(total\s+)?(knee|hip|shoulder|elbow|ankle)\s+replacement\w*", "tkr", "thr", "tka", "tha",
+                          r"re:arthroplast\w*", r"re:revision\s+(knee|hip)\w*"],
+    "neurosurgery": [r"re:craniotom\w*", r"re:(vp\s+)?shunt\w*", "dbs", r"re:deep\s+brain\s+stimulation",
+                     r"re:aneurysm\s+(clipping|coiling)", r"re:brain\s+tumou?r\s+(surg\w*|excision|removal|resection)",
+                     r"re:trans[\s-]?sphenoidal\w*", r"re:skull\s+base\s+surg\w*"],
+    "spine_surgery": [r"re:spinal\s+fusion", r"re:(micro)?discectom\w*", r"re:laminectom\w*", r"re:kyphoplast\w*",
+                      r"re:vertebroplast\w*", "tlif", "plif", r"re:scoliosis\s+(correction|surg\w*)", r"re:endoscopic\s+spine\s+surg\w*"],
+    "transplant": [r"re:(kidney|renal|liver|heart|lung|pancrea\w*|bone\s+marrow|corneal?|stem\s+cell|cornea)\s+transplant\w*",
+                   "bmt", r"re:keratoplast\w*"],
+    "cancer_surgery": [r"re:mastectom\w*", r"re:lumpectom\w*", r"re:whipple\w*", r"re:o?esophagectom\w*", r"re:gastrectom\w*",
+                       r"re:(hemi)?colectom\w*", r"re:radical\s+\w+ectom\w*", r"re:neck\s+dissection", "hipec",
+                       r"re:tumou?r\s+(resection|excision|removal)", r"re:limb\s+salvage", r"re:wertheim\w*"],
+    "eye_surgery": [r"re:cataract\s+(surg\w*|operation\w*|extraction)", r"re:phaco\w*", "sics", "lasik", "smile", "prk",
+                    r"re:vitrectom\w*", r"re:keratoplast\w*", r"re:trabeculectom\w*", r"re:squint\s+surg\w*",
+                    r"re:retinal\s+detachment\s+surg\w*", r"re:iol\s+implant\w*", "dsek", "dmek"],
+    "interventional_cardiology": [r"re:angioplast\w*", "ptca", r"re:stent(ing)?", r"re:angiograph\w*", r"re:angiogram\w*",
+                                  r"re:pacemaker\s+implant\w*", "icd", "crt", "tavi", "tavr", r"re:balloon\s+valvotom\w*", "bmv",
+                                  r"re:device\s+closure", r"re:ep\s+stud\w*", r"re:(rf\s+)?ablation", r"re:rotablat\w*", "ivus"],
+    "gi_endoscopy": ["ercp", "eus", r"re:colonoscop\w*", r"re:gastroscop\w*", r"re:upper\s+gi\s+endoscop\w*", r"re:sigmoidoscop\w*",
+                     r"re:polypectom\w*", r"re:variceal\s+(banding|ligation)", r"re:capsule\s+endoscop\w*", "peg", "poem",
+                     "esd", "emr"],
+}
+
+
+def procedure_regex(service: str) -> str:
+    import re as _re
+    parts = [t[3:] if t.startswith("re:") else r"[\s-]+".join(_re.escape(w) for w in t.split())
+             for t in PROCEDURE.get(service, [])]
+    return (r"(?i)(?<![a-z0-9])(?:" + "|".join(parts) + r")(?![a-z0-9])") if parts else ""
+
 
 def dedicated_regex(service: str) -> str:
     """Combined whole-word regex of a hand-checked service's dedicated-facility terms; '' otherwise."""

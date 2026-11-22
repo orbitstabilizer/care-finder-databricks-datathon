@@ -1,0 +1,34 @@
+blind_id,verdict,deciding_url,evidence,loads_used
+1,cannot tell,,"Site lists Labour Suite and Maternal Care but no caesarean/LSCS; search found nothing",2
+2,no,https://chmungeli.org,"Services: General Surgery, Emergency, Obstetrics, Dentistry, Eye, Burn Unit; no cardiac surgery listed",1
+3,yes,https://gcsmc.org,"Super Specialities: Cardio Vascular Thoracic Surgery",1
+4,cannot tell,,"No website; search found no source about this clinic",1
+5,cannot tell,,"Site lists Obstetrics and Gynaecology only; no caesarean mention; search found nothing",2
+6,yes,https://bajajfinservhealth.in/hospitals/ahmed-nagar/shree-netralaya-and-maternity-clinic-savedi,"Surgeries in Shree Netralaya And Maternity Clinic: Cataract Surgery, Cesarean Delivery, Lasik Surgery (directory)",2
+7,no,https://vaishalihospital.com,"Specialties: Laparoscopic, Plastic, Open Surgery, Nephrology, Anorectal, Gynae, Urology, Orthopaedic; no cardiac",1
+8,cannot tell,,"Official site refused connection; search found no Osmania General Hospital-specific caesarean source",2
+9,cannot tell,,"EHA site (redirect) had no Herbertpur service details; search found no Herbertpur-specific source",3
+10,yes,https://www.shardacare.com/specialties/obstetrics-and-gynaecology/c-section,"C-section page under ShardaCare Obstetrics & Gynaecology: surgical delivery when vaginal delivery not feasible",2
+12,cannot tell,,"Website DNS failure; directories list only General Medicine / multispecialty, no caesarean",2
+13,cannot tell,,"Site down; listings describe cardiologist/diabetologist clinic, EECP; no surgery but own site unavailable",2
+14,no,https://edmc.in,"Heart menu lists only 'Cardiology: Non-Invasive'; specialities list omits cardiac surgery",1
+11,cannot tell,,"sgvp.org redirects to school site; directory lists one CTVS surgeon only, no hospital service statement",3
+16,yes,https://bcmch.org,"Centres of Excellence: Cardiothoracic and Vascular Surgery; Paediatric Cardiology & Cardiac surgery",1
+17,yes,https://vivekahospitals.com,"Services: Cardiology, Cardio-Thoracic & Vascular Surgery",1
+15,cannot tell,,"Official site DNS failure; search found no Symbiosis-specific cardiac surgery source",2
+18,cannot tell,,"Site lists Cardiac Centre (Heart) and Cath Lab only; no surgery terms; search found nothing",2
+23,yes,https://apexhearthospital.com,"Services menu lists 'Cardiac Surgery' alongside Thoracic / Lung Surgery",1
+19,yes,https://www.manipalhospitals.com/gurugram/specialities/obstetrics-and-gynaecology/obstetrics-services/,"Caesarian birth: Cesarean delivery is the surgical delivery of a baby (Manipal Gurugram = ex-Columbia Asia Gurugram; rename not stated on page)",3
+21,cannot tell,,"Official site refused connection; search found no Rani Hospital Ranchi source",2
+24,cannot tell,,"No website; only a Bharuch-area directory listing with zero surgeries listed",1
+20,yes,https://bajajfinservhealth.in/hospitals/sagar/bhagyoday-tirth-chikitsalay-shastri-nagar,"Surgeries in Bhagyoday Tirth Chikitsalay: Cesarean Delivery (directory; list also has heart transplant, looks templated)",3
+22,no,https://matra-drishti-medicare.pages.dev,"Own site: Women's Healthcare, Eye Care, General Surgery/Medicine, Cardiology OPD; no cardiac surgery",2
+25,cannot tell,,"Listed website is EMC Amritsar, not City Hospital Jalandhar; search found nothing on City Hospital",2
+28,cannot tell,,"Website is wa.me link; profile says hybrid cardiology aimed at treating heart disease without surgery",1
+56,cannot tell,,"Listed website is EMC Amritsar, not City Hospital Jalandhar; search found nothing on City Hospital",2
+26,cannot tell,,"Own domain redirects to unrelated gambling site; directories list ophthalmologist-run eye clinic, scope unconfirmed by own site",2
+27,yes,https://marengoasiahospitals.com/doctor/dr-sumit-narang,"Clinical Director Cardiothoracic & Vascular Surgery, Gurugram and Faridabad; CABG incl. beating-heart bypass, valve repair/replacement",2
+31,no,https://jaikamaleyehospital.com,"a single speciality 15 bedded ... Hospital for Ophthalmic conditions; no cardiac surgery",1
+29,cannot tell,,"Website DNS failure; only a directory for 'Dreamland Hospital' Durgapur listing Cardiovascular Surgery specialty",2
+30,cannot tell,,"Website DNS failure; search found no Jeevan Jyot Latur source",2
+32,cannot tell,,"Website DNS failure; directory names only neurosurgery, no full service list",2

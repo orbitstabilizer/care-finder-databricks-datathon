@@ -105,6 +105,11 @@ DEPT_RE = (r"(?i)\b(department|departments|dept|division|specialit(y|ies)|specia
 # Generic dedicated-facility test (services without a DEDICATED list): term match + facility noun.
 FACILITY_NOUN_RE = (r"(?i)\b(units?|cent(re|er)s?|wards?|labs?|laborator(y|ies)|machines?|scanners?"
                     r"|theat(re|er)s?)\b")
+# Procedure services: a count of procedures counts as detailed ("500 deliveries a year"); a 4-digit
+# year is not a count.
+COUNT_RE = (r"(?i)(?<![\d,.])(?!(19|20)\d\d\b)\d[\d,]*\+?\s+([a-z-]+\s+){0,3}?"
+            r"(surger(y|ies)|procedures?|operations?|deliver(y|ies)|transplants?|replacements?"
+            r"|angioplast(y|ies)|bypass\w*|cases|sections|c-sections|lscs|stents?|implants?)\b")
 DEPT_WARNING = "Only a department or an operating theatre is listed for this service"
 
 
@@ -118,8 +123,10 @@ def term_values() -> str:
         rx = bl.term_regex(sv)
         gate = bool(rx) and sv not in bl.TERM_GATE_OFF
         drx = bl.dedicated_regex(sv)
-        rows.append(f"({lit(sv)}, {lit(rx) if rx else 'CAST(NULL AS STRING)'}, {'true' if gate else 'false'}, "
-                    f"{lit(drx) if drx else 'CAST(NULL AS STRING)'})")
+        prx = bl.procedure_regex(sv)
+        nul = "CAST(NULL AS STRING)"
+        rows.append(f"({lit(sv)}, {lit(rx) if rx else nul}, {'true' if gate else 'false'}, "
+                    f"{lit(drx) if drx else nul}, {lit(prx) if prx else nul})")
     return ", ".join(rows)
 
 
@@ -245,7 +252,7 @@ sent AS (
   {foreign_anti}
   WHERE NOT s.is_placeholder AND NOT s.is_repeat),
 terms AS (SELECT * FROM VALUES {terms_values} AS v(service, term)),
-svc_terms AS (SELECT * FROM VALUES {term_values()} AS v(service, rx, gate, drx)),
+svc_terms AS (SELECT * FROM VALUES {term_values()} AS v(service, rx, gate, drx, prx)),
 claim0 AS (
   SELECT s.unique_id, svc AS service, s.sentence_key, s.sentence, s.source_column, s.position,
          t.strength tag_strength,
@@ -265,6 +272,8 @@ claim AS (
          -- dedicated unit/machine/facility for the service (DEDICATED list, else term + facility noun)
          WHEN tag_strength = 'explicit'
               AND (regexp_replace(sentence, {lit(STRIP_RE)}, ' ') RLIKE {lit(UNIT_RE)} OR dedicated) THEN 0
+         -- procedure services: a named specific procedure or a count of procedures (explicit or stated tag)
+         WHEN procedure_hit THEN 0
          ELSE 1 END srank,
     -- term-list match first in the evidence order
     CASE WHEN tmatch THEN 0 ELSE 1 END tmiss,
@@ -275,10 +284,13 @@ claim AS (
     trim(regexp_replace(regexp_replace(lower(sentence), '[^a-z0-9 ]', ''), ' +', ' ')) norm
   FROM (
     SELECT c0.*,
-      coalesce(c0.sentence RLIKE st.rx, false) tmatch, coalesce(st.gate, false) gate,
+      coalesce(c0.sentence RLIKE st.rx, false) OR coalesce(c0.sentence RLIKE st.prx, false) tmatch,
+      coalesce(st.gate, false) gate,
+      (st.prx IS NOT NULL AND c0.tag_strength IN ('explicit', 'stated')
+       AND (c0.sentence RLIKE st.prx OR c0.sentence RLIKE {lit(COUNT_RE)})) procedure_hit,
       coalesce(CASE WHEN st.drx IS NOT NULL THEN c0.sentence RLIKE st.drx
                     ELSE c0.sentence RLIKE st.rx AND c0.sentence RLIKE {lit(FACILITY_NOUN_RE)} END, false) dedicated,
-      (NOT coalesce(c0.sentence RLIKE st.rx, false)
+      (NOT coalesce(c0.sentence RLIKE st.rx, false) AND NOT coalesce(c0.sentence RLIKE st.prx, false)
        AND (c0.sentence RLIKE {lit(OT_PATTERN)} OR c0.sentence RLIKE {lit(DEPT_RE)})) dept_ot,
       (c0.sentence RLIKE {lit(HEDGE_RE)} OR c0.sentence RLIKE {lit(COMMENT_RE)}
        OR c0.sentence RLIKE {lit(ELSEWHERE_RE)}

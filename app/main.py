@@ -192,6 +192,7 @@ GENERIC_NAME_TOKENS = {
     "heart", "kidney", "cancer", "superspeciality", "superspecialty", "and", "the", "with", "international",
     "national", "global", "family", "society", "mission", "charitable", "community", "primary", "rural",
     "urban", "civil", "eye", "surgical", "surgery", "orthopaedic", "orthopedic", "neuro", "speciality",
+    "knee", "ortho",
 }
 
 
@@ -212,15 +213,46 @@ def _own_tokens(r) -> list[str]:
     return out
 
 
+def _acronym(r) -> str:
+    """Initials of the name's words (city and generic words count; of/and/the do not)."""
+    words = [w for w in re.split(r"[^a-z0-9]+", str(r.get("name") or "").lower()) if w and w not in ("of", "and", "the")]
+    return "".join(w[0] for w in words)
+
+
+def _common_prefix(a: str, b: str) -> int:
+    n = 0
+    for x, y in zip(a, b):
+        if x != y:
+            break
+        n += 1
+    return n
+
+
+def _is_own(d: str, toks: list[str], acro: str) -> bool:
+    """Domain belongs to the facility: contains a name token; or its first label shares a >= 5-letter
+    prefix with a >= 5-letter token covering all but at most its last letter ("anupama" ~ "anupamhospital");
+    or the first label starts with the name's initials (>= 3 letters, "ccl" ~ "ccllab")."""
+    host = d.split("/")[0]
+    labels = [x for x in host.split(".") if x != "www"]
+    first = labels[0] if labels else ""
+    if any(t in host.rsplit(".", 1)[0] for t in toks):
+        return True
+    for t in toks:
+        if len(t) >= 5:
+            p = _common_prefix(t, first)
+            if p >= 5 and p >= len(t) - 1:
+                return True
+    return len(acro) >= 3 and first.startswith(acro)
+
+
 def source_list(r) -> list[dict]:
-    """Up to 3 source domains we can stand behind: domains sharing a distinctive name token with the
-    facility (official domain first), then well-known directory listings. Any other domain is never shown:
-    it may belong to a different hospital merged into this record. [] means listings only or nothing."""
+    """Up to 3 source domains we can stand behind: domains matching the facility's name (official domain
+    first), then well-known directory listings. Any other domain is never shown: it may belong to a
+    different hospital merged into this record. [] means listings only or nothing."""
     official = (r.get("official_domain") or "").lower() or None
     doms = list(dict.fromkeys(d.lower() for d in ([official] + (r.get("source_domains") or [])) if d))
-    toks = _own_tokens(r)
-    host = lambda d: d.split("/")[0].rsplit(".", 1)[0]
-    own = [d for d in doms if toks and any(t in host(d) for t in toks)]
+    toks, acro = _own_tokens(r), _acronym(r)
+    own = [d for d in doms if _is_own(d, toks, acro)]
     own.sort(key=lambda d: d != official)
     listing = [d for d in doms if d not in own and any(a in d for a in LISTING_SITES)]
     return ([{"domain": d, "listing": False} for d in own] + [{"domain": d, "listing": True} for d in listing])[:3]
