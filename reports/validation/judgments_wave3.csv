@@ -1,39 +1,72 @@
 blind_id,verdict,deciding_url,evidence,loads_used
-1,cannot tell,,"Site lists Labour Suite and Maternal Care but no caesarean/LSCS; search found nothing",2
+1,cannot tell,,Site lists Labour Suite and Maternal Care but no caesarean/LSCS; search found nothing,2
 2,no,https://chmungeli.org,"Services: General Surgery, Emergency, Obstetrics, Dentistry, Eye, Burn Unit; no cardiac surgery listed",1
-3,yes,https://gcsmc.org,"Super Specialities: Cardio Vascular Thoracic Surgery",1
-4,cannot tell,,"No website; search found no source about this clinic",1
-5,cannot tell,,"Site lists Obstetrics and Gynaecology only; no caesarean mention; search found nothing",2
+3,yes,https://gcsmc.org,Super Specialities: Cardio Vascular Thoracic Surgery,1
+4,cannot tell,,No website; search found no source about this clinic,1
+5,cannot tell,,Site lists Obstetrics and Gynaecology only; no caesarean mention; search found nothing,2
 6,yes,https://bajajfinservhealth.in/hospitals/ahmed-nagar/shree-netralaya-and-maternity-clinic-savedi,"Surgeries in Shree Netralaya And Maternity Clinic: Cataract Surgery, Cesarean Delivery, Lasik Surgery (directory)",2
 7,no,https://vaishalihospital.com,"Specialties: Laparoscopic, Plastic, Open Surgery, Nephrology, Anorectal, Gynae, Urology, Orthopaedic; no cardiac",1
-8,cannot tell,,"Official site refused connection; search found no Osmania General Hospital-specific caesarean source",2
-9,cannot tell,,"EHA site (redirect) had no Herbertpur service details; search found no Herbertpur-specific source",3
-10,yes,https://www.shardacare.com/specialties/obstetrics-and-gynaecology/c-section,"C-section page under ShardaCare Obstetrics & Gynaecology: surgical delivery when vaginal delivery not feasible",2
+8,cannot tell,,Official site refused connection; search found no Osmania General Hospital-specific caesarean source,2
+9,cannot tell,,EHA site (redirect) had no Herbertpur service details; search found no Herbertpur-specific source,3
+10,yes,https://www.shardacare.com/specialties/obstetrics-and-gynaecology/c-section,C-section page under ShardaCare Obstetrics & Gynaecology: surgical delivery when vaginal delivery not feasible,2
+11,cannot tell,,"sgvp.org redirects to school site; directory lists one CTVS surgeon only, no hospital service statement",3
 12,cannot tell,,"Website DNS failure; directories list only General Medicine / multispecialty, no caesarean",2
 13,cannot tell,,"Site down; listings describe cardiologist/diabetologist clinic, EECP; no surgery but own site unavailable",2
-14,no,https://edmc.in,"Heart menu lists only 'Cardiology: Non-Invasive'; specialities list omits cardiac surgery",1
-11,cannot tell,,"sgvp.org redirects to school site; directory lists one CTVS surgeon only, no hospital service statement",3
-16,yes,https://bcmch.org,"Centres of Excellence: Cardiothoracic and Vascular Surgery; Paediatric Cardiology & Cardiac surgery",1
+14,no,https://edmc.in,Heart menu lists only 'Cardiology: Non-Invasive'; specialities list omits cardiac surgery,1
+15,cannot tell,,Official site DNS failure; search found no Symbiosis-specific cardiac surgery source,2
+16,yes,https://bcmch.org,Centres of Excellence: Cardiothoracic and Vascular Surgery; Paediatric Cardiology & Cardiac surgery,1
 17,yes,https://vivekahospitals.com,"Services: Cardiology, Cardio-Thoracic & Vascular Surgery",1
-15,cannot tell,,"Official site DNS failure; search found no Symbiosis-specific cardiac surgery source",2
-18,cannot tell,,"Site lists Cardiac Centre (Heart) and Cath Lab only; no surgery terms; search found nothing",2
-23,yes,https://apexhearthospital.com,"Services menu lists 'Cardiac Surgery' alongside Thoracic / Lung Surgery",1
-19,yes,https://www.manipalhospitals.com/gurugram/specialities/obstetrics-and-gynaecology/obstetrics-services/,"Caesarian birth: Cesarean delivery is the surgical delivery of a baby (Manipal Gurugram = ex-Columbia Asia Gurugram; rename not stated on page)",3
-21,cannot tell,,"Official site refused connection; search found no Rani Hospital Ranchi source",2
-24,cannot tell,,"No website; only a Bharuch-area directory listing with zero surgeries listed",1
+18,cannot tell,,Site lists Cardiac Centre (Heart) and Cath Lab only; no surgery terms; search found nothing,2
+19,yes,https://www.manipalhospitals.com/gurugram/specialities/obstetrics-and-gynaecology/obstetrics-services/,Caesarian birth: Cesarean delivery is the surgical delivery of a baby (Manipal Gurugram = ex-Columbia Asia Gurugram; rename not stated on page),3
 20,yes,https://bajajfinservhealth.in/hospitals/sagar/bhagyoday-tirth-chikitsalay-shastri-nagar,"Surgeries in Bhagyoday Tirth Chikitsalay: Cesarean Delivery (directory; list also has heart transplant, looks templated)",3
+21,cannot tell,,Official site refused connection; search found no Rani Hospital Ranchi source,2
 22,no,https://matra-drishti-medicare.pages.dev,"Own site: Women's Healthcare, Eye Care, General Surgery/Medicine, Cardiology OPD; no cardiac surgery",2
+23,yes,https://apexhearthospital.com,Services menu lists 'Cardiac Surgery' alongside Thoracic / Lung Surgery,1
+24,cannot tell,,No website; only a Bharuch-area directory listing with zero surgeries listed,1
 25,cannot tell,,"Listed website is EMC Amritsar, not City Hospital Jalandhar; search found nothing on City Hospital",2
-28,cannot tell,,"Website is wa.me link; profile says hybrid cardiology aimed at treating heart disease without surgery",1
-56,cannot tell,,"Listed website is EMC Amritsar, not City Hospital Jalandhar; search found nothing on City Hospital",2
 26,cannot tell,,"Own domain redirects to unrelated gambling site; directories list ophthalmologist-run eye clinic, scope unconfirmed by own site",2
 27,yes,https://marengoasiahospitals.com/doctor/dr-sumit-narang,"Clinical Director Cardiothoracic & Vascular Surgery, Gurugram and Faridabad; CABG incl. beating-heart bypass, valve repair/replacement",2
-31,no,https://jaikamaleyehospital.com,"a single speciality 15 bedded ... Hospital for Ophthalmic conditions; no cardiac surgery",1
-29,cannot tell,,"Website DNS failure; only a directory for 'Dreamland Hospital' Durgapur listing Cardiovascular Surgery specialty",2
-30,cannot tell,,"Website DNS failure; search found no Jeevan Jyot Latur source",2
+28,cannot tell,,Website is wa.me link; profile says hybrid cardiology aimed at treating heart disease without surgery,1
+29,cannot tell,,Website DNS failure; only a directory for 'Dreamland Hospital' Durgapur listing Cardiovascular Surgery specialty,2
+30,cannot tell,,Website DNS failure; search found no Jeevan Jyot Latur source,2
+31,no,https://jaikamaleyehospital.com,a single speciality 15 bedded ... Hospital for Ophthalmic conditions; no cardiac surgery,1
 32,cannot tell,,"Website DNS failure; directory names only neurosurgery, no full service list",2
 33,cannot tell,,"Listed website is Agarwal Nursing Home, not Nagpal; ESI listing gives no specialties",2
 34,cannot tell,,"Site lists Obstetrics & Gynaecology, High Risk Pregnancy Care, Operating Theaters; no caesarean mention",2
 35,cannot tell,,"Website DNS failure; search found only Om Hospitals in Mira Road and Pali, not Bhiwandi",2
-36,yes,https://deshmukhhospital.org,"Pediatrics services list 'Paediatric- Cardiology & Cardiac surgery' (no adult CABG/valve mentioned)",1
+36,yes,https://deshmukhhospital.org,Pediatrics services list 'Paediatric- Cardiology & Cardiac surgery' (no adult CABG/valve mentioned),1
+37,cannot tell,,Official site 403; search found no Hope Hospital Jaipur caesarean source,2
 38,yes,https://doaj.org/article/d3f378de4c464122988e0b94821959d6,"Case-control study of women who had emergency C-sections at KMC Hospital Attavar, Mangalore",1
+39,yes,https://www.sarvodayahospital.com,Cardiac Sciences: Cardiothoracic & Vascular Surgery; Coronary Artery Bypass Surgery (CABG); Heart Valve Surgery,1
+40,no,https://q1hospitals.com,"Surgical list: joint replacement, spine, neuro, plastic, vascular, urology, OBG, ENT; only Cardiology, no cardiac surgery",1
+41,yes,https://www.bajajfinservhealth.in/hospitals/gurgaon/swastik-maternity-and-medical-centre-sector-8,Directory lists Cesarean Delivery among services; myUpchar notes operation theatre and labour room,2
+42,cannot tell,,"Listed site refused; MNP site lists labour suite and OG specialist, no caesarean mention",3
+43,cannot tell,,Website DNS failure; only a gynaecologist profile mentions practising at Jeevan Doctors Planet,2
+44,cannot tell,,Site mentions team of cardiologists and cardiothoracic surgeons but no surgical procedure stated; search found nothing,2
+45,yes,https://drlalshospital.com,"Obstetrics and Gynecology services: Cesarean Delivery, Normal Delivery, Vaccum Delivery, High-Risk Pregnancy",1
+46,cannot tell,,Own domain redirect returned only 'Error'; no service list obtained,2
+47,cannot tell,,"Listed website is Yadav Hospital Nalasopara, not Satara; search found no Jadhav Hospital Satara",2
+48,no,https://bbmhospital.com,"Specialties: Anaesthesia, Ortho, Gen Med, ENT, OBG, Radiology, Cardiology, Nephrology, Emergency; no cardiac surgery",1
+49,cannot tell,,Listed site/phone are Bharath Hospital Kottayam (has Cardiovascular surgery dept); no Kulathupuzha branch found,2
+50,cannot tell,,"Site: government multi-speciality, 18 departments not all listed, details marked placeholders; no cardiac surgery mention",1
+51,cannot tell,,"Site lists Obstetrics & Gynaecology, 2 modular OTs, delivery review; no caesarean mention; search found nothing",2
+52,yes,https://faithhospitals.com,Testimonial on hospital site: My relation got admited for open heart surgery. They have done the surgery (services list omits cardiac surgery),3
+53,cannot tell,,Website DNS failure; search found nothing on Shaurya Hospital Ahmedabad,2
+54,yes,https://jaiprakashhospitals.com,Department: CARDIOLOGY & CARDIO THORACIC SURGERY,1
+55,yes,https://savitahospital.com,"offers comprehensive medical care in areas of cardiology, cardiothoracic surgery",1
+56,cannot tell,,"Listed website is EMC Amritsar, not City Hospital Jalandhar; search found nothing on City Hospital",2
+57,cannot tell,,"Own site connection reset; directories list cardiovascular surgery specialty / one CTVS surgeon, surgeries list shows only kidney transplant",3
+58,cannot tell,,"Website DNS failure; directories list 18 specialties incl. cardiology, obstetrics/caesarean not shown",2
+59,yes,https://mmchospital.in,Cardiac team specializes in cardiac by-pass surgery; Cardio Vascular Thoracic Surgery super-speciality,1
+60,yes,https://swapnahealthcare.com,Testimonial on hospital site: I had a C-section and stayed for 4 days; routine and high-risk obstetric patients treated,1
+61,no,https://niraamayadiagnostics.com,"Best Diagnostic Centre in Varanasi: MRI, CT, X-ray, ECG, 2-D Echo; no surgery",1
+62,cannot tell,,Official site returned only header; search found no BLDE hospital cardiac surgery source,2
+63,cannot tell,,No website; search found no listing for Mamta Hospital Bhokar/Dhule,1
+64,no,https://ultracareclinic.co.in,"Treatments focus on laparoscopic surgeries (hernia, gallstone, appendix) and anorectal laser; no cardiac surgery",1
+65,cannot tell,,"Listed site is RK Hospital Gajuwaka, Visakhapatnam (not Kurnool); search found no R.R. Hospital Kurnool source",2
+66,no,https://kushwahaeyehosp.com,Kushwaha eye hospital is the leading eye hospital in the region; all services eye-related,1
+67,yes,https://bppoddarhospital.com,"Cardiology & Cardiothoracic Surgery centre: Minimally invasive bypass (CABG), Valve replacement",1
+68,yes,https://bajajfinservhealth.in/hospitals/gurgaon/geeta-nursing-home-sector-7,"Directory: Gynecology and Obstetrics; one surgery listed, cesarean delivery (surgeries subpage shows 0)",2
+69,yes,https://doaj.org/article/c08213d3c38b48dc974f9291895637af,Study at Assam Medical College Hospital: 276 (47%) deliveries were performed via caesarean section,3
+70,yes,https://www.bajajfinservhealth.in/hospitals/kurukshetra/b-s-heartcare-and-multispeciality-hospital-dd-colony,Directory lists open heart surgery and neonatal/pediatric heart surgery among services,1
+71,yes,https://www.drlogy.com/rajkot/hospital/miracle-women-s-hospital/question,"Directory FAQ lists Cesarean Delivery and Normal Vaginal Delivery among services; site shows High Risk Deliveries, OTs",2
