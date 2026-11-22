@@ -105,10 +105,10 @@ the facility-type job was stopped after every pilot batch failed its echo check)
 
 ## Demo cases (keep these working)
 
-The presentation uses these stories, written out in `reports/executive_summary.md` ("Demo stories"):
+The presentation uses these stories, written out in `reports/executive_summary.md` ("Demo stories"); every feature is walked through in `reports/demo_script.md`:
 Rayagada NICU (PIN 765019: nearest Confirmed NICU 143 km, Christian Hospital Bissamcuttack Likely ~8 km), Gumla dialysis
 (PIN 835207), Aravind Eye Hospital, Hyderabad (unique_id b8a5401f-42f1-422a-8cd9-686a15b4cb76, should stay Unverified for
-dialysis), and Thanjavur dialysis (PIN 613001) as the example of a Confirmed result nearby (Sudar Hospital, <1 km).
+dialysis; it shows at PIN 605602 Villupuram, 1.1 km, below a Possible at 31 km, because its coordinates are there), and Thanjavur dialysis (PIN 613001) as the example of a Confirmed result nearby (Sudar Hospital, <1 km).
 After any rebuild or app change, check these still behave as described and refresh the numbers if they moved.
 
 ## The challenge
