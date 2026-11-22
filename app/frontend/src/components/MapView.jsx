@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import L from "leaflet";
 import { useStore } from "../App.jsx";
-import { COLOUR, visibleResults } from "../api.js";
+import { COLOUR, fmtKm, visibleResults } from "../api.js";
 
 // Muted basemap. CARTO Positron answers "API key required", so Esri's keyless gray canvas is used.
 const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
@@ -10,6 +10,7 @@ const maskStyle = (dark) => (dark ? { fillColor: "#05080c", fillOpacity: 0.62 } 
 const borderStyle = (dark) => ({ color: dark ? "#4a5565" : "#b9c0ca" });
 const markerStyle = (tier, hl) => ({ radius: hl ? 9 : 6, color: "#fff", weight: hl ? 2.5 : 1.5, fillColor: COLOUR[tier], fillOpacity: 1 });
 const fitPad = () => (window.innerWidth <= 900 ? { paddingTopLeft: [30, 30], paddingBottomRight: [30, 40] } : { padding: [56, 56] });
+const hasLoc = (r) => r && r.exact_location && Number.isFinite(r.lat) && Number.isFinite(r.lon);
 const escHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 function inRing(ring, lat, lon) {
@@ -29,8 +30,8 @@ export default function MapView() {
   const handlers = useRef({});     // latest callbacks for leaflet events
   handlers.current = { pickPoint: s.pickPoint, openDetails: s.openDetails, setHoveredId: s.setHoveredId };
   const visible = useMemo(() => visibleResults(data, shown, openUnverified), [data, shown, openUnverified]);
-  const sel = useRef({ selectedId, byId });
-  sel.current = { selectedId, byId };
+  const sel = useRef({ selectedId, byId, point });
+  sel.current = { selectedId, byId, point };
 
   /* ---- create the map once ---- */
   useEffect(() => {
@@ -80,7 +81,9 @@ export default function MapView() {
         const { selectedId: id, byId: b } = sel.current;
         const r = id && b[id];
         const pts = m.current.fitPts;
-        if (r) map.panTo([r.lat, r.lon], { animate: false });
+        const p = sel.current.point;
+        if (r && p && hasLoc(r)) map.fitBounds([[p.lat, p.lon], [r.lat, r.lon]], { ...fitPad(), maxZoom: 13, animate: false });
+        else if (r) map.panTo([r.lat, r.lon], { animate: false });
         else if (pts?.length > 1) map.fitBounds(pts, { ...fitPad(), maxZoom: 14, animate: false });
         else if (pts?.length === 1) map.setView(pts[0], map.getZoom(), { animate: false });
       },
@@ -148,11 +151,34 @@ export default function MapView() {
     o.halo.bringToBack();
   }, [hoveredId, selectedId, byId, visible]);
 
-  /* ---- zoom to the selected facility ---- */
+  /* ---- zoom to the selected facility; arrow from the search point to it ---- */
   useEffect(() => {
+    const o = m.current;
+    o.arrow?.remove(); o.arrow = null;
     const r = selectedId && byId[selectedId];
-    if (r) m.current.map.setView([r.lat, r.lon], Math.max(m.current.map.getZoom(), 13));
-  }, [selectedId, byId]);
+    if (!r) return;
+    if (!point || !hasLoc(r)) {
+      if (Number.isFinite(r.lat) && Number.isFinite(r.lon)) o.map.setView([r.lat, r.lon], Math.max(o.map.getZoom(), 13));
+      return;
+    }
+    const a = [point.lat, point.lon], b = [r.lat, r.lon], col = COLOUR[r.tier] || "#0f6e6e";
+    const casing = L.polyline([a, b], { color: isDark ? "#0b0f14" : "#ffffff", opacity: 0.75, weight: 6, interactive: false });
+    const line = L.polyline([a, b], { color: col, weight: 3, dashArray: "8 7", lineCap: "round", interactive: false });
+    const pa = o.map.project(a, 10), pb = o.map.project(b, 10);   // screen bearing is zoom-invariant in Web Mercator
+    const deg = (Math.atan2(pb.y - pa.y, pb.x - pa.x) * 180) / Math.PI;
+    const head = L.marker(b, { interactive: false, keyboard: false, zIndexOffset: 500, icon: L.divIcon({
+      className: "arrow-head", iconSize: [0, 0],
+      html: `<svg width="16" height="14" viewBox="0 0 16 14" style="transform:rotate(${deg}deg) translate(-27px,-7px)"><path d="M0 0 L16 7 L0 14 Z" fill="${col}" stroke="${isDark ? "#0b0f14" : "#fff"}" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
+    }) });
+    const km = Number(r.distance_km);
+    const label = Number.isFinite(km) ? L.marker(o.map.unproject(pa.add(pb).divideBy(2), 10), { interactive: false, keyboard: false, zIndexOffset: 400, icon: L.divIcon({
+      className: "arrow-label", iconSize: [0, 0],
+      html: `<span style="border-color:${col}">${r.location_uncertain ? "about " : ""}${fmtKm(km)}</span>`,
+    }) }) : null;
+    o.arrow = L.layerGroup([casing, line, head, ...(label ? [label] : [])]).addTo(o.map);
+    line.bringToBack(); casing.bringToBack(); o.mask?.bringToBack();
+    o.map.fitBounds([a, b], { ...fitPad(), maxZoom: 13 });
+  }, [selectedId, byId, point, isDark]);
 
   return <div id="map" ref={el} aria-label="Map of India. Click to choose a search point." />;
 }

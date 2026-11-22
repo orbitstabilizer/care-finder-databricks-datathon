@@ -405,6 +405,11 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .leaflet-control-zoom a { border-radius: 8px !important; }
 .leaflet-bar { border: 0 !important; box-shadow: var(--shadow-md) !important; border-radius: 10px !important; overflow: hidden; }
 .leaflet-control-attribution { font-size: 10.5px; }
+.arrow-head, .arrow-label { background: none; border: 0; }
+.arrow-head svg { position: absolute; left: 0; top: 0; transform-origin: 0 0; overflow: visible; }
+.arrow-label span { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); white-space: nowrap;
+  background: var(--surface); color: var(--text); border: 2px solid var(--accent); border-radius: 999px;
+  padding: 1px 8px; font-size: 12px; font-weight: 700; box-shadow: var(--shadow-md); font-variant-numeric: tabular-nums; }
 .you { position: relative; }
 .you::before, .you::after { content: ""; position: absolute; left: 50%; top: 50%; border-radius: 50%; transform: translate(-50%, -50%); }
 .you::after { width: 14px; height: 14px; background: #111827; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
