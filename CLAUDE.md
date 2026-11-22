@@ -66,8 +66,8 @@ Every result table you write must carry `unique_id` so it joins to `facilities_c
 - Shifted facilities have 0 sentences. 60 non-shifted facilities also have 0 sentences.
 - Coordinates are not cleaned: 6 rows have scrambled lat/lon (`coords_outside_india`).
 - Full build report: `reports/clean_base_build.md`. Rebuild with `scripts/build_clean_base.py`.
-- Location: `facility_location` was built outside the orchestrated sub-agents; no script for it is in this repo and it
-  has no Unity Catalog comments. Its key column is named `facility_id` and joins 1:1 to `facilities_clean.unique_id`
+- Location: `facility_location` was built by a separate location workstream; its SQL is in `sql/` (00_schema to
+  03_facility_location). It has no Unity Catalog comments. Its key column is named `facility_id` and joins 1:1 to `facilities_clean.unique_id`
   (10,077 matched, none unmatched). It still contains the 88 shifted rows (87 with no point, 1 with a PIN point) —
   filter them with `facilities_clean.is_shifted`. Helpers: `workspace.vf.pin_point` (key `pin`, 18,966 rows),
   `workspace.vf.city_point` (key `city_key`, 272 rows). Distance: SQL function
@@ -484,3 +484,9 @@ It has pandas, numpy, matplotlib, plotly, pyarrow, geopandas, shapely and
 - Genie (`genie_ask` / `view_ask`) can answer ad-hoc data questions and finds tables
   unaided — useful, optional. It is stateless Q&A: it cannot be assigned work, write
   tables or run on a schedule.
+
+## Version control
+
+This folder is a git repo (no remote). Commit at each milestone (after a rebuild, a re-tag, an app deploy) with a short
+message, so any change can be rolled back. `data/`, `.venv/` and `node_modules/` are ignored. Never delete work that is
+not committed.
