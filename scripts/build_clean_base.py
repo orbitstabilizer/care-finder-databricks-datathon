@@ -10,6 +10,7 @@ Source (read-only Delta Sharing):
 Usage:
   /opt/homebrew/Caskroom/miniconda/base/envs/py13/bin/python scripts/build_clean_base.py          # build + report
   /opt/homebrew/Caskroom/miniconda/base/envs/py13/bin/python scripts/build_clean_base.py report   # report only
+  /opt/homebrew/Caskroom/miniconda/base/envs/py13/bin/python scripts/build_clean_base.py add_phone  # add/refresh official_phone only
 """
 
 import json
@@ -150,6 +151,7 @@ SELECT
       transform(from_json(specialties, 'array<string>'), x -> trim(x)),
       x -> x IS NOT NULL AND x <> '')))           AS specialties,
   {domain('officialWebsite')}                     AS official_domain,
+  {missing_to_null('officialPhone')}              AS official_phone,
   array_sort(array_distinct(filter(
       transform(from_json(source_urls, 'array<string>'), u -> {domain('u')}),
       x -> x IS NOT NULL)))                       AS source_domains,
@@ -279,6 +281,7 @@ COLUMN_COMMENTS = {
         "yearEstablished": "try_cast(trim(yearEstablished) AS INT); NULL when missing or unparseable. Not range-checked.",
         "specialties": "Source specialties JSON parsed to array<string>, items trimmed, blanks removed, distinct, sorted.",
         "official_domain": "Host of officialWebsite: lowercase, scheme and leading www. stripped, cut at / : ? #. NULL if missing ('', 'null', 'none') or not hostname-shaped.",
+        "official_phone": "Source officialPhone, trimmed; '', 'null', 'none' (any case) -> NULL; otherwise the raw value (not parsed or validated; may hold several numbers).",
         "source_domains": "Distinct sorted hosts of the source_urls JSON array, same normalisation as official_domain.",
         "facilityTypeId": "Source facilityTypeId, unchanged.",
         "operatorTypeId": "Source operatorTypeId, unchanged.",
@@ -426,10 +429,33 @@ def token() -> str:
     return json.loads(raw)["access_token"]
 
 
+OFFICIAL_PHONE_COMMENT = "Source officialPhone, trimmed; '', 'null', 'none' (any case) -> NULL; otherwise the raw value (not parsed or validated; may hold several numbers)."
+
+
+def add_phone(cur):
+    """Add official_phone to the existing facilities_clean in place (no recreate; other
+    columns and flags untouched): ADD COLUMN if missing, then MERGE from the source share."""
+    cur.execute(f"DESCRIBE TABLE {FC}")
+    if "official_phone" not in {r[0] for r in cur.fetchall()}:
+        cur.execute(f"ALTER TABLE {FC} ADD COLUMN official_phone STRING")
+    # the 11 duplicated ids are exact duplicate rows, so max() picks their single value
+    cur.execute(f"""MERGE INTO {FC} t
+USING (SELECT unique_id, max({missing_to_null('officialPhone')}) AS official_phone
+       FROM {SRC} GROUP BY unique_id) s
+ON t.unique_id = s.unique_id
+WHEN MATCHED THEN UPDATE SET t.official_phone = s.official_phone""")
+    cur.execute(f"ALTER TABLE {FC} ALTER COLUMN official_phone COMMENT '{OFFICIAL_PHONE_COMMENT.replace(chr(39), chr(92) + chr(39))}'")
+    cur.execute(f"SELECT count(*), count(official_phone) FROM {FC}")
+    print("facilities_clean rows, with official_phone:", cur.fetchall(), flush=True)
+
+
 def main():
     report_only = len(sys.argv) > 1 and sys.argv[1] == "report"
     with sql.connect(server_hostname=HOST, http_path=HTTP_PATH, access_token=token()) as conn:
         cur = conn.cursor()
+        if len(sys.argv) > 1 and sys.argv[1] == "add_phone":
+            add_phone(cur)
+            return
         if not report_only:
             for stmt in BUILD:
                 print("RUN:", stmt.strip().splitlines()[0], flush=True)

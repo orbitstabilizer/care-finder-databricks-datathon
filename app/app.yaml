@@ -1,4 +1,6 @@
-command: ["bash", "-c", "python startup_probe.py; streamlit run app.py"]
+command: ["bash", "-c", "python startup_probe.py; exec uvicorn main:app --host 0.0.0.0 --port ${DATABRICKS_APP_PORT:-8000}"]
 env:
   - name: DATABRICKS_WAREHOUSE_ID
     valueFrom: sql-warehouse
+  - name: SERVING_ENDPOINT
+    valueFrom: llm-endpoint

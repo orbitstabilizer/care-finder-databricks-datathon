@@ -1,0 +1,81 @@
+blind_id,verdict,deciding_url,evidence,loads_used
+1,cannot tell,,Own homepage service list omits dialysis but not exhaustive; only third-party directory lists kidney dialysis,2
+2,yes,https://gvnhospitals.in,"""15 bedded ICU with dialysis""",1
+3,yes,https://mpuh.org,"""44 dialysis stations""; 525000+ dialysis procedures",1
+4,yes,https://aarnahospital.com/nephrology-and-renal-sciences/,"""round-the-clock routine and emergency dialysis services""; Hemo dialysis, Peritoneal Dialysis",2
+5,cannot tell,,Official site blocked (TLS cert error); search found no source about this centre,2
+6,cannot tell,,Homepage services omit dialysis; directory dialysis listing for 'Imperial Hospital' not clearly same facility,2
+7,yes,https://asiandhanbad.aimsindia.com,"Centre of excellence: ""Asian Centre for Kidney Disease & Dialysis""",1
+8,yes,https://nsmch.com,"Super Specialty Clinic: ""Nephrology with Dialysis""",1
+9,yes,https://svarahospital.com/nephrology-hospital-vijayawada.html,"Nephrologists ""involved in managing the dialysis care for patients with end stage renal disease"" (no unit described)",2
+10,cannot tell,,Official site DNS failure; directory listings omit dialysis but are not complete,2
+11,yes,https://bookdialysis.com/de/india/nephroplus-at-max-super-speciality-hospital-mohali,"NephroPlus dialysis unit at Max Super Speciality Hospital, Phase-VI, Sector 56A, Mohali",1
+12,cannot tell,,"Official site 502; search shows nephrology only, no dialysis statement",2
+13,yes,https://elitemedcity.in,"Nephrology section: provides ""advanced dialysis services""",1
+14,no,https://surakshanet.com,"Diagnostics provider (pathology, radiology, consultation); full service list has no dialysis",1
+15,no,https://asgeyehospital.com,"Eye-care-only network (cataract, LASIK, retina etc.); no dialysis",1
+16,cannot tell,,Listed website (Chakan) unreachable and different town; search found no Mangalwedha source,2
+17,cannot tell,,No website; search returned no source about Maitri Hospital Vadodara,1
+18,yes,https://www.starhealth.in/hospitals-info/kidney-hospitals-in-kolkata/,"Directory: dedicated to providing dialysis and kidney care; haemodialysis, peritoneal dialysis listed (official site unreachable)",2
+19,yes,https://samalcare.com,"Facilities list includes ""Dialysis""",1
+20,cannot tell,,Official domain parked/for sale; search found only Pakistani Shifa hospitals,2
+21,yes,https://pandianheartinstitute.in,"Services: ""Dialysis Unit""; Treatment offered: ""Dialysis Treatment""",1
+22,yes,https://sbah.in,"Dialysis Center: hemodialysis, ICU dialysis, 24x7 emergency dialysis; ""Affordable Dialysis In Solan""",1
+23,cannot tell,,Search found no source for Anand Hospital Shirol; listed website is a different (Bhosari) hospital,1
+24,cannot tell,,Medanta Ranchi hospital pages list nephrology/renal care but no dialysis; dialysis-unit news is for Ranchi Mediclinic,3
+25,yes,https://iqraahospital.in,"""Dialysis Treatment Per Month +7.4k""; facilities include ""Dialysis Centre""",1
+26,yes,https://kashmirobserver.net/?p=130571,"Lists ""DH Samba in Jammu Division"" among district hospitals with PMNDP dialysis centres (2021)",2
+27,yes,https://sakthihospitals.com,"Facilities section lists ""Dialysis Unit"" (Triplicane, Chennai)",1
+28,cannot tell,,"Only directory listing found (urology, general medicine); no dialysis statement",1
+29,cannot tell,,"Official site DNS failure; only directory listing found, no dialysis mention",2
+30,yes,https://thecorporatehospital.com,"""spacious Dialysis Wing seprate for Positive and Negative patients""",1
+31,yes,https://lionshospitalbhuj.org,"Free Dialysis Center with 39 dialysis machines, 150+ patients",1
+32,yes,https://drhgrobertshospital.com/home,"Own website lists a ""Dialysis"" section with named dialysis staff (site blocked direct fetch)",2
+33,yes,https://www.asterhospitals.in/hospitals/aster-narayanadri-tirupati/center-of-excellences/nephrology,"Nephrology services include dialysis, CAPD, permcath; double RO water for hemodialysis",1
+34,yes,https://spshospitals.com,"Facilities menu lists ""Dialysis"" (spshospitals.com/dialysis/); Renal Sciences centre",1
+35,cannot tell,,"Site TLS error; directory only says the clinic's director nephrologist does dialysis work, not that clinic has unit",2
+36,yes,https://www.docindia.org/doctors/visakhapatnam/dr-krishnam-raju-p-nephrology,"Doctor profile lists Indus Hospital, KGH Down Road offering Hemodialysis, hemodiafiltration (own site silent)",3
+37,cannot tell,,"Apollo Aragonda page blocked (403); search shows rural hospital specialties without nephrology/dialysis, not conclusive",2
+38,yes,https://vardaanhospitals.org,"Facilities list includes ""Dialysis Center""; Nephrologist department",1
+39,no,https://manglamdiagnostics.com,"Diagnostic centre chain (pathology, imaging, cardiac tests); no dialysis among services",1
+40,cannot tell,,"Directory listings show nephrology/urology and kidney transplant, but no explicit dialysis statement",1
+41,yes,https://ashaarogyam.com,"MD message: ""Dedicated 10 bedded H.D. unit""; dedicated nephrology ward",1
+42,cannot tell,,Search found no source about this Pilibhit hospital; listed website is a different hospital,1
+43,no,https://aravind.org,"Aravind is an eye-care-only network (hospitals, eye bank, Aurolab); no dialysis",1
+44,yes,https://mithospital.com,"Nephrology unit ""offering services such as dialysis kidney biopsy""",1
+45,yes,https://bookdialysis.com/zh/india/nephroplus-at-santosh-hospital,"NephroPlus dialysis clinic at Santosh Hospital, Promenade Road, Pulikeshi Nagar, Bengaluru (listed site is a Ghaziabad namesake)",2
+46,cannot tell,,Homepage lists nephrology but no dialysis; CGHS listing says only 'kidney care',2
+47,cannot tell,,rlch.co.in redirects to empty directory index; search found no Life Care Hospital Ranchi source,3
+48,cannot tell,,Listed website is EMC Amritsar (different hospital); search found no City Hospital Jalandhar dialysis source,2
+49,yes,https://nationalhospitals.com,"What We Offer: ""Renal Care & Dialysis""",1
+50,cannot tell,,Search found no dialysis statement for Jamshedpur Sadar Hospital; listed website is a different hospital,1
+51,yes,https://www.bhatiahospital.org/procedure/dialysis,Offers dialysis through skilled nephrologists and trained technicians; haemodialysis described,2
+52,yes,https://nmwcardiology.org,"Our Services: ""Dialysis Unit""; dedicated Dialysis page",1
+53,cannot tell,,KIMS Kannur page lists nephrology and kidney transplant centre but no dialysis statement,2
+54,cannot tell,,No website; search found no source for Shri Balaji Clinic Varanasi,1
+55,yes,https://dwarkahospital.com,"Facilities: ""Hemodialysis"" - treatment that filters waste and excess fluid from the blood",1
+56,yes,https://naradhospital.com,"Departments list ""DIALYSIS""; ECHS/Ayushman sections list ""Dialysis & Nephrology""",1
+57,cannot tell,,Listed website is Aditya Hospital Hyderabad (different); Guntur listing found has no dialysis mention,2
+58,no,https://indriyahospital.com,"Eye and ENT hospital only (cataract, LASIK, ear, nose, throat); no dialysis",1
+59,yes,https://quilondiocese.com/benziger-hospital/,"Nephrology section lists ""Bicarbonate Haemodialysis""",3
+60,cannot tell,,No website; search found no source confirming services at Samaritan Hospital Changanacherry,1
+61,cannot tell,,"Official site refused connection; only a cost-aggregator estimate, no direct dialysis statement",2
+62,yes,https://vijayahospital.org/?p=3285,"Enables doctors ""to perform cutting-edge procedures like dialysis, continuous renal replacement therapy""",3
+63,cannot tell,,Own homepage mentions nephrology/renal transplant but not dialysis; search found no confirmation,2
+64,cannot tell,,Listed domain redirects to unrelated site; directory listings show no dialysis,2
+65,yes,https://nhshospital.in,"Nephrology & Kidney Care: ""Maintenance haemodialysis, critical care nephrology, renal biopsies""",1
+66,cannot tell,,"Own site returned empty page; directories describe a diagnostic centre (MRI, CT, labs) - not its own scope confirmation",2
+67,cannot tell,,Own homepage lists nephrology but no dialysis; search found no dialysis statement,2
+68,cannot tell,,No website; search found only a differently named 'Sah Speciality Clinic' directory entry,1
+69,cannot tell,,Official site refused connection; search returned only other 'PIMS' institutions,2
+70,yes,https://imperialhospitals.in,"Our Specialities lists ""Dialysis"" (Chikhali, Pune)",1
+71,yes,https://www.rfhospital.org/news-and-features/night-dialysis,"Hospital ""has started a nocturnal Dialysis center for Dialysis patients""",1
+72,yes,https://www.staffnews.in/2023/02/list-of-complete-consolidated-empanelled-hcos-under-cghs-patna.html,"CGHS Patna empanelment for Ruban Memorial: ""Urology, Nephrology & Dental Care including Dialysis""",2
+73,yes,https://mpimsr.org,"Departments include ""Dialysis Unit""; hospital has ""high-tech MRI and dialysis units""",1
+74,cannot tell,,Official site refused connection; directories show nephrology/kidney focus but no explicit dialysis,2
+75,cannot tell,,Own homepage lists nephrology (consultant nephrologist) but no dialysis; search found nothing more,2
+76,yes,https://shamnursinghomehospital.com,"Kidney Care Centre: ""Peritoneal, nocturnal and short daily dialysis and hemodialysis are provided""",1
+77,cannot tell,,Homepage centres of excellence omit dialysis but list may be incomplete; search found no dialysis source,2
+78,cannot tell,,No website; search found no source about New Padma Clinic Valsad,1
+79,cannot tell,,"Official site DNS failure; directories describe urology/stone focus, no dialysis mention (not conclusive)",2
+80,yes,https://globalhearthospital.com,"Service: ""Nephrology including Dialysis""",1

@@ -22,6 +22,20 @@ Last updated: 2026-11-21.
   no access to code or data. `CONVERSATION_BRIEF.md` is written for that agent. Coding
   agents should ignore that file; this file is the source of truth.
 
+## Credits and quota — standing rule (every agent)
+
+The workspace can hit its credit or quota limit. Yusuf can reset or top it up, so this is a **pause, not a failure**.
+
+1. **Recognise it:** errors mentioning quota, credit, billing or limit exceeded; the warehouse refusing to start;
+   or ai_query calls failing in bulk with the same error.
+2. **Stop sending calls at once.** No retry loops, no prompt or design changes to work around it.
+3. **Keep everything written so far.** Long jobs (tagging, audit) must stay resumable from the last saved chunk.
+   Do not write rows that failed because of credits as ordinary failed rows.
+4. **Report immediately.** First line: `CREDITS EXHAUSTED, TOP UP NEEDED`. Then the exact error text, which jobs
+   stopped, and rows done vs rows left for each.
+5. **After Yusuf confirms the top-up, resume** from where each job stopped. Never restart from zero.
+6. **These failures do not count** toward any failed-row gate (e.g. the 3% gate).
+
 ## Clean base tables, use these
 
 **Rule: every job reads from these three tables, not from the raw `facilities` table.**
@@ -34,18 +48,67 @@ Every result table you write must carry `unique_id` so it joins to `facilities_c
 | `workspace.vf.facilities_clean` | `unique_id` | 10,077 | `is_shifted` (88 column-shifted rows), `coords_missing` (118), `coords_outside_india` (6), `country_not_india`, `id_not_uuid`, `postcode_valid` (9,909) |
 | `workspace.vf.facility_sentences` | `unique_id, source_column, position` | 451,110 | `is_placeholder` (1,000; rule in `placeholder_rule`), `is_repeat` (26,422) |
 | `workspace.vf.distinct_sentences` | `sentence_id` (also `sentence_key`) | 271,262 | none — already excludes placeholders and shifted facilities |
+| `workspace.vf.facility_location` | `facility_id` (= unique_id) | 10,077 | `location_confidence` (high 5,551, good 3,221, suspect 666, approximate 476, unverified 73, none 90), `location_source` (coordinates / city_point / pin_point / none). Use `final_lat`, `final_lon`. |
+| `workspace.vf.record_audit` | `unique_id` | 9,577 | LLM record-merging audit per facility (non-shifted, >= 5 usable sentences): `verdict` consistent / partly_foreign / mostly_foreign, `foreign_share`, `other_names`, `n_flagged`/`flagged_share`, `failed` (2). Prompt pb_v1; `scripts/record_audit.py`, `reports/record_audit.md`. |
+| `workspace.vf.sentence_foreign_flag` | `unique_id, source_column, position` | 422,686 | `is_foreign` per usable sentence of each audited facility (26,332 true; NULL for the 2 failed audits); joins `facility_sentences`. |
+| `workspace.vf.nfhs_district` | `nfhs_key` (state\|district normalised) | 706 | NFHS-5 58 clean DOUBLE indicators + `rank_<col>` (1..706, 1 = worst per `service_indicator_map.direction`) and `quartile_<col>` for the 8 mapped indicators. Context only, never tier/rank input. `scripts/build_nfhs.py` |
+| `workspace.vf.pin_district` | `pin, pin_key` | 20,824 | PIN x district with `pin_share`, `is_primary` (majority district), `nfhs_key`, `match_method` exact/alias/NULL |
+| `workspace.vf.district_alias` | `pin_key` | 110 | hand-written PIN-directory district -> NFHS district (renames, spellings, post-2019 districts -> parent; see `note`) |
+| `workspace.vf.facility_district` | `unique_id` | 9,989 | non-shifted facility -> postcode's primary district; `nfhs_key` linked for 9,689 (8,242 exact, 1,447 alias) |
+| `workspace.vf.service_indicator_map` | `service, indicator_column` | 13 | 6 headline services -> 0-3 NFHS indicators with label, direction, reason; NULL indicator = deliberately none (mri, burn_care). Query: `scripts/district_context.sql` / `.py` |
 
 - `facilities_clean` columns: unique_id, name, city, state, postcode, postcode_valid, latitude, longitude, description,
   specialties (distinct array), numberDoctors / capacity / yearEstablished (INT, NULL if unparseable), facilityTypeId,
-  operatorTypeId, affiliationTypeIds, official_domain, source_domains, plus the flags.
+  operatorTypeId, affiliationTypeIds, official_domain, source_domains, official_phone (raw officialPhone, trimmed,
+  ''/'null'/'none' -> NULL; added in place by `build_clean_base.py add_phone`), plus the flags.
 - `facility_sentences`: sentence (trimmed) and sentence_key (lowercase, whitespace collapsed, trailing punctuation removed).
   Join to `distinct_sentences` on sentence_key. Usable sentence = not placeholder and not repeat.
 - Shifted facilities have 0 sentences. 60 non-shifted facilities also have 0 sentences.
 - Coordinates are not cleaned: 6 rows have scrambled lat/lon (`coords_outside_india`).
 - Full build report: `reports/clean_base_build.md`. Rebuild with `scripts/build_clean_base.py`.
+- Location: `facility_location` was built outside the orchestrated sub-agents; no script for it is in this repo and it
+  has no Unity Catalog comments. Its key column is named `facility_id` and joins 1:1 to `facilities_clean.unique_id`
+  (10,077 matched, none unmatched). It still contains the 88 shifted rows (87 with no point, 1 with a PIN point) —
+  filter them with `facilities_clean.is_shifted`. Helpers: `workspace.vf.pin_point` (key `pin`, 18,966 rows),
+  `workspace.vf.city_point` (key `city_key`, 272 rows). Distance: SQL function
+  `workspace.vf.haversine_km(lat1, lon1, lat2, lon2)` returns km.
+
+Lookup tables (hand-written; source and rebuild in `scripts/build_lookups.py`, sample rows in `reports/lookup_tables.md`):
+- `workspace.vf.service_department_map` — key `service, link_type, value`, 442 rows: per service label (49), the specialty terms
+  (in >= 20 facilities) and other service labels that back it, each `strong` / `supporting`; other_clinical has one NULL row.
+- `workspace.vf.service_type_fit` — key `service, facility_type`, 1,274 rows (49 x 26): `expected` / `plausible` / `unexpected`
+  for a service at a facility type, with the deciding rule in `note`.
 
 Superseded drafts, do not use: `workspace.vf.silver_evidence`, `workspace.vf.facility_type_pilot` (unvalidated labels;
 the facility-type job was stopped after every pilot batch failed its echo check).
+
+## App — extend this one, do not build another
+
+- Name `vf-locator`, URL https://vf-locator-7474654371578222.aws.databricksapps.com
+- Workspace source `/Workspace/Users/yakin@andrew.cmu.edu/vf/locator`; local source `app/` (deploy steps in `app/README.md`).
+- **FastAPI + React single page**: `app/main.py` serves `app/static/` (Vite build output). Front-end source is
+  `app/frontend/` (React + Leaflet). **Rebuild before deploying: `cd app/frontend && npm ci && npm run build`**,
+  then sync with `--exclude-from app/.syncignore` (keeps `frontend/` out of the workspace). Vanilla rollback copy in
+  `app/static_vanilla/`.
+  `app.yaml` runs `startup_probe.py` then `uvicorn main:app` on `$DATABRICKS_APP_PORT` (default 8000).
+  SQL stays in `queries.py`, names in `config.py`, LLM matcher in `matcher.py`.
+- Endpoints: `GET /api/services` (grouped entries + coverage note), `POST /api/match {text}`,
+  `GET /api/resolve?pin=|place=`, `GET /api/search?service=&lat=&lon=` (summary + per-tier lists, 20 each, with
+  quotes, warnings, why, details), `GET /api/stats` (build_stats funnel + validation line from
+  `workspace.vf.validation_dialysis`). Reserved: `#district-strip` under the summary for a future `/api/district_context`.
+- Old Streamlit UI kept in `app/streamlit_legacy/` (app.py, app.yaml, requirements.txt) for rollback: copy those
+  three back into `app/` and redeploy.
+- Local run: `DATABRICKS_CONFIG_PROFILE=datathon uvicorn main:app --port 8765` from `app/` (needs fastapi + uvicorn).
+- `workspace.vf.facility_service` is the contract table the verdict job fills (one row per unique_id, service).
+- **Rule: do not build another app; extend this one.**
+- Auto-rebuild: `scripts/rebuild_watcher.py` (nohup, log `reports/rebuild_watcher.log`) reruns `scripts/build_facility_service.py` every 3 new lines in `reports/sentence_tagging/chunks.jsonl` and once after the tagging PID exits, then stops. Data changes need no app redeploy.
+
+## Demo cases (keep these working)
+
+The presentation uses three stories, written out in `reports/executive_summary.md` ("Demo stories"):
+Thanjavur dialysis (PIN 613001), Gumla dialysis (PIN 835207), and Aravind Eye Hospital, Hyderabad
+(unique_id b8a5401f-42f1-422a-8cd9-686a15b4cb76, should stay Unverified for dialysis). After any rebuild or app change,
+check these three still behave as described and refresh the numbers in that section if they moved.
 
 ## The challenge
 

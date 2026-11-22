@@ -3,6 +3,8 @@
 Usage:
   python scripts/pilot_a_tagger.py stage0   # build pa_sample (500), tag first 50 at 25/call
   python scripts/pilot_a_tagger.py stage1   # tag remaining 450 at 25/call, then 250 at 50/call
+  python scripts/pilot_a_tagger.py single   # one sentence per ai_query call, one SQL statement:
+                                            # first 50 (gate 90% valid), then all 500
 
 Writes: workspace.vf.pa_sample, pa_prompt, pa_results, pa_statements.
 Local logs: reports/pilot_a/ (raw responses, statement timings).
@@ -108,6 +110,23 @@ PROMPT = textwrap.dedent(f"""\
 
     Snippets:
     """)
+
+# One-sentence variant (pa_single_v1). Only adaptation: a single JSON object for one
+# snippet instead of a numbered array; "i" and "echo" dropped. Everything else unchanged.
+PROMPT_SINGLE_VERSION = "pa_single_v1"
+_NEW_RULES = textwrap.dedent("""\
+    Rules:
+    - Reply with ONLY a JSON object
+      {"is_claim":<true|false>,
+       "services":[<labels>],"strength":"explicit"|"stated"|"weak"|"na",
+       "suggested_name":"<only when other_clinical>"}
+    - When is_claim is true, "services" must contain at least one allowed label.
+
+    Snippet:
+    """)
+PROMPT_SINGLE = (PROMPT[: PROMPT.index("Rules:\n")]
+                 .replace("For EACH numbered snippet decide", "For the snippet decide")
+                 + _NEW_RULES)
 
 CALL_SQL = ("SELECT ai_query(?, ?, modelParameters => named_struct('temperature', 0.0)) AS out")
 
@@ -291,8 +310,74 @@ def summarize(name, rows, stats, seconds):
           f"failed_retry={stats['failed_retry']} call_seconds={seconds:.1f}")
 
 
+def run_single(r: Runner, name: str, where: str):
+    """One ai_query call per sentence, all rows in ONE SQL statement; id carried in SQL."""
+    r.run(f"{name}_ai_query", f"""
+        INSERT INTO {VF}.pa_single_raw
+        SELECT '{name}' AS run, sentence_id, ord,
+               ai_query('{MODEL}', concat(?, example_sentence),
+                        modelParameters => named_struct('temperature', 0.0),
+                        failOnError => false) AS resp,
+               current_timestamp()
+        FROM {VF}.pa_sample WHERE {where}""", [PROMPT_SINGLE], fetch=False)
+    got = r.run(f"{name}_read", f"""
+        SELECT r.sentence_id, s.example_sentence, r.resp.result, r.resp.errorMessage
+        FROM {VF}.pa_single_raw r JOIN {VF}.pa_sample s USING (sentence_id)
+        WHERE r.run = '{name}' ORDER BY r.ord""")
+    rows = []
+    for sid, sent, res, err in got:
+        o, fail = None, None
+        if err or res is None:
+            fail = "ai_query_error"
+        else:
+            try:
+                o = json.loads(res[res.index("{"): res.rindex("}") + 1])
+                fail = validate_row(o) if isinstance(o, dict) else "unparseable"
+            except Exception:  # noqa: BLE001
+                fail = "unparseable"
+        ok = fail is None
+        rows.append({
+            "sentence_id": sid, "run": name, "batch_id": name, "batch_size": 1,
+            "mode": "single_sql", "is_claim": o.get("is_claim") if ok else None,
+            "services": o.get("services") if ok else None,
+            "strength": o.get("strength") if ok else None,
+            "suggested_name": o.get("suggested_name") if isinstance(o, dict) else None,
+            "echo": None, "echo_first_word_match": None, "valid": ok, "fail_reason": fail,
+            "prompt_version": PROMPT_SINGLE_VERSION})
+    write_results(r, rows)
+    from collections import Counter
+    v = sum(x["valid"] for x in rows)
+    secs = [s["seconds"] for s in r.stmts if s["label"] == f"{name}_ai_query"][0]
+    print(f"[{name}] rows={len(rows)} valid={v} reasons="
+          f"{dict(Counter(x['fail_reason'] for x in rows if not x['valid']))} "
+          f"ai_query_seconds={secs}")
+    return v / len(rows)
+
+
+def main_single():
+    r = Runner("single")
+    r.run("create_pa_single_raw",
+          f"CREATE TABLE IF NOT EXISTS {VF}.pa_single_raw (run STRING, sentence_id STRING, "
+          "ord INT, resp STRUCT<result: STRING, errorMessage: STRING>, created_at TIMESTAMP)",
+          fetch=False)
+    r.run("upsert_pa_prompt_single",
+          f"MERGE INTO {VF}.pa_prompt t USING (SELECT ? v, ? m, 0.0 tmp, ? p) s "
+          "ON t.prompt_version = s.v WHEN NOT MATCHED THEN INSERT "
+          "(prompt_version, model, temperature, prompt, created_at) "
+          "VALUES (s.v, s.m, s.tmp, s.p, current_timestamp())",
+          [PROMPT_SINGLE_VERSION, MODEL, PROMPT_SINGLE], fetch=False)
+    share = run_single(r, "single_s0", "ord < 50")
+    if share >= 0.9:
+        run_single(r, "single_full", "ord < 500")
+    else:
+        print("single_s0 under 90% valid: stopped")
+    write_statements(r)
+
+
 def main():
     stage = sys.argv[1]
+    if stage == "single":
+        return main_single()
     r = Runner(stage)
     retry_log: list = []
     ensure_tables(r)

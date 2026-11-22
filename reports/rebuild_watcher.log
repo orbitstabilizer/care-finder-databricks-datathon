@@ -1,0 +1,62 @@
+2026-11-22T02:19:15+00:00 watcher start pid=2904 tagging_pid=97730 chunk_lines=14
+2026-11-22T02:25:45+00:00 BUILD start (chunk lines 14 -> 17)
+2026-11-22T02:26:09+00:00   build secs=9.7
+2026-11-22T02:26:09+00:00   demoted pairs: [{'n_pairs': 272312, 'n_demoted_from_explicit_or_stated': 160, 'n_demoted': 179, 'n_dialysis': 10}]
+2026-11-22T02:26:09+00:00   {'tier': 'Confirmed', 'n': 14187}
+2026-11-22T02:26:09+00:00   {'tier': 'Likely', 'n': 46394}
+2026-11-22T02:26:09+00:00   {'tier': 'Possible', 'n': 4400}
+2026-11-22T02:26:09+00:00   {'tier': 'Unverified', 'n': 16836}
+2026-11-22T02:26:09+00:00   [{'tagged': 172918, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 25, 48, 619700, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 81817}]
+2026-11-22T02:26:09+00:00 BUILD ok secs=24
+2026-11-22T02:32:39+00:00 BUILD start (chunk lines 17 -> 20)
+2026-11-22T02:33:08+00:00   build secs=10.0
+2026-11-22T02:33:08+00:00   demoted pairs: [{'n_pairs': 290117, 'n_demoted_from_explicit_or_stated': 187, 'n_demoted': 211, 'n_dialysis': 10}]
+2026-11-22T02:33:08+00:00   build_stats: [{'metric': 'distinct_sentences', 'value': 271262}, {'metric': 'distinct_sentences_tagged', 'value': 198188}, {'metric': 'facilities', 'value': 9989}, {'metric': 'facilities_audited', 'value': 9575}, {'metric': 'records_mixed', 'value': 814}, {'metric': 'rows_confirmed', 'value': 15353}, {'metric': 'rows_likely', 'value': 46933}, {'metric': 'rows_possible', 'value': 4448}, {'metric': 'rows_unverified', 'value': 17113}, {'metric': 'sentences_read', 'value': 423706}, {'metric': 'service_claim_sentences', 'value': 138147}]
+2026-11-22T02:33:08+00:00   {'tier': 'Confirmed', 'n': 15353}
+2026-11-22T02:33:08+00:00   {'tier': 'Likely', 'n': 46933}
+2026-11-22T02:33:08+00:00   {'tier': 'Possible', 'n': 4448}
+2026-11-22T02:33:08+00:00   {'tier': 'Unverified', 'n': 17113}
+2026-11-22T02:33:08+00:00   [{'tagged': 198188, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 32, 42, 846469, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 83847}]
+2026-11-22T02:33:08+00:00 BUILD ok secs=29
+2026-11-22T02:40:38+00:00 BUILD start (chunk lines 20 -> 23)
+2026-11-22T02:41:07+00:00   build secs=10.8
+2026-11-22T02:41:07+00:00   demoted pairs: [{'n_pairs': 321654, 'n_demoted_from_explicit_or_stated': 215, 'n_demoted': 243, 'n_dialysis': 10}]
+2026-11-22T02:41:07+00:00   build_stats: [{'metric': 'distinct_sentences', 'value': 271262}, {'metric': 'distinct_sentences_tagged', 'value': 228062}, {'metric': 'facilities', 'value': 9989}, {'metric': 'facilities_audited', 'value': 9575}, {'metric': 'records_mixed', 'value': 814}, {'metric': 'rows_confirmed', 'value': 16684}, {'metric': 'rows_likely', 'value': 47895}, {'metric': 'rows_possible', 'value': 4448}, {'metric': 'rows_unverified', 'value': 18826}, {'metric': 'sentences_read', 'value': 423706}, {'metric': 'service_claim_sentences', 'value': 159831}]
+2026-11-22T02:41:07+00:00   {'tier': 'Confirmed', 'n': 16684}
+2026-11-22T02:41:07+00:00   {'tier': 'Likely', 'n': 47895}
+2026-11-22T02:41:07+00:00   {'tier': 'Possible', 'n': 4448}
+2026-11-22T02:41:07+00:00   {'tier': 'Unverified', 'n': 18826}
+2026-11-22T02:41:07+00:00   [{'tagged': 228062, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 40, 41, 206500, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 87853}]
+2026-11-22T02:41:07+00:00 BUILD ok secs=29
+2026-11-22T02:48:37+00:00 BUILD start (chunk lines 23 -> 26)
+2026-11-22T02:49:06+00:00   build secs=10.4
+2026-11-22T02:49:06+00:00   demoted pairs: [{'n_pairs': 345066, 'n_demoted_from_explicit_or_stated': 256, 'n_demoted': 291, 'n_dialysis': 10}]
+2026-11-22T02:49:06+00:00   build_stats: [{'metric': 'distinct_sentences', 'value': 271262}, {'metric': 'distinct_sentences_tagged', 'value': 257926}, {'metric': 'facilities', 'value': 9989}, {'metric': 'facilities_audited', 'value': 9575}, {'metric': 'records_mixed', 'value': 814}, {'metric': 'rows_confirmed', 'value': 17330}, {'metric': 'rows_likely', 'value': 48183}, {'metric': 'rows_possible', 'value': 4448}, {'metric': 'rows_unverified', 'value': 19843}, {'metric': 'sentences_read', 'value': 423706}, {'metric': 'service_claim_sentences', 'value': 181014}]
+2026-11-22T02:49:06+00:00   {'tier': 'Confirmed', 'n': 17330}
+2026-11-22T02:49:06+00:00   {'tier': 'Likely', 'n': 48183}
+2026-11-22T02:49:06+00:00   {'tier': 'Possible', 'n': 4448}
+2026-11-22T02:49:06+00:00   {'tier': 'Unverified', 'n': 19843}
+2026-11-22T02:49:06+00:00   [{'tagged': 257926, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 48, 40, 799886, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 89804}]
+2026-11-22T02:49:06+00:00 BUILD ok secs=29
+2026-11-22T02:54:36+00:00 BUILD start (chunk lines 26 -> 29)
+2026-11-22T02:55:04+00:00   build secs=10.6
+2026-11-22T02:55:04+00:00   demoted pairs: [{'n_pairs': 355548, 'n_demoted_from_explicit_or_stated': 271, 'n_demoted': 314, 'n_dialysis': 10}]
+2026-11-22T02:55:04+00:00   build_stats: [{'metric': 'distinct_sentences', 'value': 271262}, {'metric': 'distinct_sentences_tagged', 'value': 269731}, {'metric': 'facilities', 'value': 9989}, {'metric': 'facilities_audited', 'value': 9575}, {'metric': 'records_mixed', 'value': 814}, {'metric': 'rows_confirmed', 'value': 17555}, {'metric': 'rows_likely', 'value': 48357}, {'metric': 'rows_possible', 'value': 4443}, {'metric': 'rows_unverified', 'value': 20344}, {'metric': 'sentences_read', 'value': 423706}, {'metric': 'service_claim_sentences', 'value': 189571}]
+2026-11-22T02:55:04+00:00   {'tier': 'Confirmed', 'n': 17555}
+2026-11-22T02:55:04+00:00   {'tier': 'Likely', 'n': 48357}
+2026-11-22T02:55:04+00:00   {'tier': 'Possible', 'n': 4443}
+2026-11-22T02:55:04+00:00   {'tier': 'Unverified', 'n': 20344}
+2026-11-22T02:55:04+00:00   [{'tagged': 269731, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 54, 39, 556685, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 90699}]
+2026-11-22T02:55:04+00:00 BUILD ok secs=28
+2026-11-22T02:55:04+00:00 tagging pid 97730 exited; final build
+2026-11-22T02:55:04+00:00 BUILD start (tagging finished)
+2026-11-22T02:55:31+00:00   build secs=9.9
+2026-11-22T02:55:31+00:00   demoted pairs: [{'n_pairs': 355548, 'n_demoted_from_explicit_or_stated': 271, 'n_demoted': 314, 'n_dialysis': 10}]
+2026-11-22T02:55:31+00:00   build_stats: [{'metric': 'distinct_sentences', 'value': 271262}, {'metric': 'distinct_sentences_tagged', 'value': 269731}, {'metric': 'facilities', 'value': 9989}, {'metric': 'facilities_audited', 'value': 9575}, {'metric': 'records_mixed', 'value': 814}, {'metric': 'rows_confirmed', 'value': 17555}, {'metric': 'rows_likely', 'value': 48357}, {'metric': 'rows_possible', 'value': 4443}, {'metric': 'rows_unverified', 'value': 20344}, {'metric': 'sentences_read', 'value': 423706}, {'metric': 'service_claim_sentences', 'value': 189571}]
+2026-11-22T02:55:31+00:00   {'tier': 'Confirmed', 'n': 17555}
+2026-11-22T02:55:31+00:00   {'tier': 'Likely', 'n': 48357}
+2026-11-22T02:55:31+00:00   {'tier': 'Possible', 'n': 4443}
+2026-11-22T02:55:31+00:00   {'tier': 'Unverified', 'n': 20344}
+2026-11-22T02:55:31+00:00   [{'tagged': 269731, 'audited': 9575, 'ts': datetime.datetime(2026, 11, 22, 2, 55, 7, 596146, tzinfo=zoneinfo.ZoneInfo(key='Etc/UTC')), 'n_rows': 90699}]
+2026-11-22T02:55:31+00:00 BUILD ok secs=27
+2026-11-22T02:55:31+00:00 watcher exit

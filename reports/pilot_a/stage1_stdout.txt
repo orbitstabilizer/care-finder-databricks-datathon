@@ -1,0 +1,4 @@
+[s1_bs25] rows=450 valid=442 failed=8 reasons={'unknown_label': 8} echo_mismatch=1 batches=18 failed_first=1 failed_retry=1 call_seconds=383.1
+[s1_bs50] rows=250 valid=243 failed=7 reasons={'unknown_label': 7} echo_mismatch=0 batches=5 failed_first=0 failed_retry=0 call_seconds=140.2
+retry_log: [{'batch': 's1_bs25_b010', 'attempt': 1, 'reason': 'unparseable'}, {'batch': 's1_bs25_b010', 'attempt': 2, 'reason': 'unparseable', 'action': 'single'}]
+ThriftBackend.attempt_request: Exception: I/O operation on closed file.

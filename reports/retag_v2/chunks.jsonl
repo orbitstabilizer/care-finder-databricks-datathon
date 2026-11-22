@@ -1,0 +1,5 @@
+{"ts": "2026-11-22T03:10:28+00:00", "chunk_id": "v2_c01", "members": 10000, "raw": 10000, "parts_queried": 4, "seconds": 132.4, "per_s": 75.5, "invalid_first": 102}
+{"ts": "2026-11-22T03:13:14+00:00", "chunk_id": "v2_c02", "members": 10000, "raw": 10000, "parts_queried": 4, "seconds": 159.6, "per_s": 62.7, "invalid_first": 111}
+{"ts": "2026-11-22T03:15:47+00:00", "chunk_id": "v2_c03", "members": 10000, "raw": 10000, "parts_queried": 4, "seconds": 145.7, "per_s": 68.6, "invalid_first": 112}
+{"ts": "2026-11-22T03:16:27+00:00", "chunk_id": "v2_c04", "members": 991, "raw": 991, "parts_queried": 4, "seconds": 34.8, "per_s": 28.5, "invalid_first": 10}
+{"ts": "2026-11-22T03:17:40+00:00", "chunk_id": "v2_retry", "rows": 339, "seconds": 61.7}

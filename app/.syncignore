@@ -1,0 +1,4 @@
+frontend/
+frontend/**
+__pycache__/
+.syncignore

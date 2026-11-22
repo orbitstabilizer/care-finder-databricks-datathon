@@ -1,0 +1,44 @@
+statements {"ts": "2026-11-22T01:45:20+00:00", "label": "create_sentence_tags", "seconds": 1.36}
+statements {"ts": "2026-11-22T01:45:21+00:00", "label": "create_sentence_tags_raw", "seconds": 0.63}
+statements {"ts": "2026-11-22T01:45:21+00:00", "label": "create_st_chunk_members", "seconds": 0.61}
+statements {"ts": "2026-11-22T01:45:22+00:00", "label": "read_prompt", "seconds": 0.86}
+statements {"ts": "2026-11-22T01:45:23+00:00", "label": "chunk_ids", "seconds": 0.64}
+statements {"ts": "2026-11-22T01:45:24+00:00", "label": "next_tier", "seconds": 0.93}
+statements {"ts": "2026-11-22T01:45:25+00:00", "label": "chunk_exists", "seconds": 0.66}
+statements {"ts": "2026-11-22T01:45:25+00:00", "label": "next_tier", "seconds": 0.65}
+statements {"ts": "2026-11-22T01:45:27+00:00", "label": "c001_members", "seconds": 1.67}
+statements {"ts": "2026-11-22T01:45:28+00:00", "label": "chunk_count", "seconds": 0.86}
+statements {"ts": "2026-11-22T01:45:28+00:00", "label": "raw_parts", "seconds": 0.69}
+statements {"ts": "2026-11-22T01:47:55+00:00", "label": "c001_a1_p0", "seconds": 146.23}
+statements {"ts": "2026-11-22T01:48:14+00:00", "label": "c001_a1_p1", "seconds": 166.06}
+statements {"ts": "2026-11-22T01:48:20+00:00", "label": "c001_a1_p3", "seconds": 171.3}
+statements {"ts": "2026-11-22T01:48:40+00:00", "label": "c001_a1_p2", "seconds": 191.31}
+statements {"ts": "2026-11-22T01:48:41+00:00", "label": "c001_read_a1", "seconds": 1.27}
+statements {"ts": "2026-11-22T01:48:43+00:00", "label": "c001_write", "seconds": 1.87}
+statements {"ts": "2026-11-22T01:48:45+00:00", "label": "c001_write", "seconds": 1.75}
+statements {"ts": "2026-11-22T01:48:46+00:00", "label": "c001_write", "seconds": 1.67}
+statements {"ts": "2026-11-22T01:48:48+00:00", "label": "c001_write", "seconds": 1.75}
+statements {"ts": "2026-11-22T01:48:50+00:00", "label": "c001_write", "seconds": 1.65}
+chunks {"ts": "2026-11-22T01:48:50+00:00", "chunk_id": "c001", "mode": "conc4", "members": 10000, "rows_written": 10000, "ai_query_seconds": 192.0, "sentences_per_s": 52.08, "retry_rows": 180, "retry_seconds": 0.0, "fail_first": {"unparseable": 82, "unknown_label": 79, "claim_without_label": 19}, "fail_after_retry": {}, "failed_rows": 180, "over_length_names": 0, "chunk_total_seconds": 202.0}
+statements {"ts": "2026-11-22T01:48:51+00:00", "label": "remaining", "seconds": 0.92}
+progress {"ts": "2026-11-22T01:48:51+00:00", "chunk_id": "c001", "tier": 1, "remaining": 225115, "end_to_end_rate": 48.35, "projected_hours_left": 1.29}
+statements {"ts": "2026-11-22T01:48:52+00:00", "label": "next_tier", "seconds": 1.04}
+statements {"ts": "2026-11-22T01:48:53+00:00", "label": "chunk_exists", "seconds": 0.8}
+statements {"ts": "2026-11-22T01:48:53+00:00", "label": "next_tier", "seconds": 0.62}
+statements {"ts": "2026-11-22T01:48:55+00:00", "label": "c002_members", "seconds": 1.58}
+statements {"ts": "2026-11-22T01:48:55+00:00", "label": "chunk_count", "seconds": 0.74}
+statements {"ts": "2026-11-22T01:48:56+00:00", "label": "raw_parts", "seconds": 0.83}
+statements {"ts": "2026-11-22T01:51:02+00:00", "label": "c002_a1_p0", "seconds": 125.84}
+statements {"ts": "2026-11-22T01:51:02+00:00", "label": "c002_a1_p1", "seconds": 126.1}
+statements {"ts": "2026-11-22T01:51:05+00:00", "label": "c002_a1_p3", "seconds": 128.7}
+statements {"ts": "2026-11-22T01:51:07+00:00", "label": "c002_a1_p2", "seconds": 130.97}
+statements {"ts": "2026-11-22T01:51:09+00:00", "label": "c002_read_a1", "seconds": 1.31}
+statements {"ts": "2026-11-22T01:51:11+00:00", "label": "c002_write", "seconds": 1.86}
+statements {"ts": "2026-11-22T01:51:12+00:00", "label": "c002_write", "seconds": 1.75}
+statements {"ts": "2026-11-22T01:51:14+00:00", "label": "c002_write", "seconds": 1.65}
+statements {"ts": "2026-11-22T01:51:16+00:00", "label": "c002_write", "seconds": 1.83}
+statements {"ts": "2026-11-22T01:51:17+00:00", "label": "c002_write", "seconds": 1.37}
+chunks {"ts": "2026-11-22T01:51:17+00:00", "chunk_id": "c002", "mode": "conc4", "members": 8236, "rows_written": 8236, "ai_query_seconds": 131.8, "sentences_per_s": 62.49, "retry_rows": 138, "retry_seconds": 0.0, "fail_first": {"unparseable": 82, "unknown_label": 49, "claim_without_label": 7}, "fail_after_retry": {}, "failed_rows": 138, "over_length_names": 0, "chunk_total_seconds": 141.7}
+statements {"ts": "2026-11-22T01:51:18+00:00", "label": "remaining", "seconds": 0.88}
+progress {"ts": "2026-11-22T01:51:18+00:00", "chunk_id": "c002", "tier": 1, "remaining": 216879, "end_to_end_rate": 56.3, "projected_hours_left": 1.07}
+statements {"ts": "2026-11-22T01:51:19+00:00", "label": "next_tier", "seconds": 0.91}

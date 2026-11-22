@@ -1,0 +1,13 @@
+[
+ {
+  "batch": "s1_bs25_b010",
+  "attempt": 1,
+  "reason": "unparseable"
+ },
+ {
+  "batch": "s1_bs25_b010",
+  "attempt": 2,
+  "reason": "unparseable",
+  "action": "single"
+ }
+]

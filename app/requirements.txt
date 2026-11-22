@@ -1,5 +1,5 @@
-folium
-streamlit-folium
+fastapi
+uvicorn[standard]
 databricks-sql-connector
 databricks-sdk
 pandas

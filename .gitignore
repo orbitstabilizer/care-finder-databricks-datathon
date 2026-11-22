@@ -1,9 +1,14 @@
+# local environments and caches
 .venv/
-.databricks/
-.ipynb_checkpoints/
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
+.DS_Store
+node_modules/
+app/frontend/node_modules/
 
-# 31 MB of parquet pulled down for local inspection; the working copy of the
-# data lives on Databricks, not here.
+# regenerable local data copies (all data lives in Databricks)
 data/
+
+# local tool settings
+.claude/settings.local.json

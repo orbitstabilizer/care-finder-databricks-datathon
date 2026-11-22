@@ -1,0 +1,158 @@
+import { useEffect, useMemo, useRef } from "react";
+import L from "leaflet";
+import { useStore } from "../App.jsx";
+import { COLOUR, visibleResults } from "../api.js";
+
+// Muted basemap. CARTO Positron answers "API key required", so Esri's keyless gray canvas is used.
+const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+const ESRI_OPTS = { maxNativeZoom: 16, maxZoom: 18, attribution: "Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; OpenStreetMap contributors" };
+const maskStyle = (dark) => (dark ? { fillColor: "#05080c", fillOpacity: 0.62 } : { fillColor: "#eef0f3", fillOpacity: 0.72 });
+const borderStyle = (dark) => ({ color: dark ? "#4a5565" : "#b9c0ca" });
+const markerStyle = (tier, hl) => ({ radius: hl ? 9 : 6, color: "#fff", weight: hl ? 2.5 : 1.5, fillColor: COLOUR[tier], fillOpacity: 1 });
+const fitPad = () => (window.innerWidth <= 900 ? { paddingTopLeft: [30, 30], paddingBottomRight: [30, 40] } : { padding: [56, 56] });
+const escHtml = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+function inRing(ring, lat, lon) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [x1, y1] = ring[i], [x2, y2] = ring[j];
+    if ((y1 > lat) !== (y2 > lat) && lon < ((x2 - x1) * (lat - y1)) / (y2 - y1) + x1) inside = !inside;
+  }
+  return inside;
+}
+
+export default function MapView() {
+  const s = useStore();
+  const { point, data, shown, openUnverified, selectedId, hoveredId, isDark, byId, mapApi } = s;
+  const el = useRef(null);
+  const m = useRef({});            // leaflet objects
+  const handlers = useRef({});     // latest callbacks for leaflet events
+  handlers.current = { pickPoint: s.pickPoint, openDetails: s.openDetails, setHoveredId: s.setHoveredId };
+  const visible = useMemo(() => visibleResults(data, shown, openUnverified), [data, shown, openUnverified]);
+  const sel = useRef({ selectedId, byId });
+  sel.current = { selectedId, byId };
+
+  /* ---- create the map once ---- */
+  useEffect(() => {
+    const map = L.map(el.current, {
+      center: [22.5, 82.5], zoom: 5, minZoom: 4, zoomControl: false,
+      maxBounds: [[6, 68], [37.5, 98]], maxBoundsViscosity: 1.0,
+    });
+    L.control.zoom({ position: "topleft" }).addTo(map);
+    const shade = document.documentElement.dataset.theme === "dark" ? "Dark" : "Light";
+    const base = L.tileLayer(`${ESRI}World_${shade}_Gray_Base/MapServer/tile/{z}/{y}/{x}`, ESRI_OPTS).addTo(map);
+    map.createPane("labels");
+    map.getPane("labels").style.zIndex = 350;
+    map.getPane("labels").style.pointerEvents = "none";
+    const labels = L.tileLayer(`${ESRI}World_${shade}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`, { ...ESRI_OPTS, attribution: "", pane: "labels" }).addTo(map);
+    // Transparent label tiles: hide leftover zoom levels once the current one has loaded.
+    labels.on("load", () => {
+      const z = String(labels._tileZoom);
+      labels.getContainer()?.querySelectorAll(".leaflet-tile-container").forEach((c) => {
+        const lvl = Object.entries(labels._levels || {}).find(([, l]) => l.el === c);
+        c.style.display = lvl && lvl[0] !== z ? "none" : "";
+      });
+    });
+    const results = L.layerGroup().addTo(map);
+    m.current = { map, base, labels, results, ring: null, mask: null, border: null, markers: {}, halo: null, point: null, fitPts: null };
+
+    fetch("/india.geojson").then((r) => r.json()).then((g) => {
+      const ring = g.geometry.coordinates[0];
+      const world = [[-89, -179], [-89, 179], [89, 179], [89, -179]];
+      const dark = document.documentElement.dataset.theme === "dark" || (!document.documentElement.dataset.theme && window.matchMedia?.("(prefers-color-scheme: dark)").matches);
+      m.current.ring = ring;
+      m.current.mask = L.polygon([world, ring.map(([lon, lat]) => [lat, lon])], { stroke: false, interactive: false, ...maskStyle(dark) }).addTo(map);
+      m.current.border = L.polyline(ring.map(([lon, lat]) => [lat, lon]), { weight: 1, interactive: false, ...borderStyle(dark) }).addTo(map);
+    }).catch(() => {});
+
+    map.on("click", (e) => {
+      const { lat, lng } = e.latlng;
+      if (m.current.ring && !inRing(m.current.ring, lat, lng)) {
+        L.popup({ className: "oops" }).setLatLng(e.latlng).setContent("Please choose a point in India").openOn(map);
+        return;
+      }
+      handlers.current.pickPoint(lat, lng);
+    });
+
+    mapApi.current = {
+      invalidate: () => map.invalidateSize({ pan: false }),
+      refit: () => {
+        const { selectedId: id, byId: b } = sel.current;
+        const r = id && b[id];
+        const pts = m.current.fitPts;
+        if (r) map.panTo([r.lat, r.lon], { animate: false });
+        else if (pts?.length > 1) map.fitBounds(pts, { ...fitPad(), maxZoom: 14, animate: false });
+        else if (pts?.length === 1) map.setView(pts[0], map.getZoom(), { animate: false });
+      },
+    };
+    return () => { map.remove(); mapApi.current = null; };
+  }, [mapApi]);
+
+  /* ---- theme: basemap + mask ---- */
+  useEffect(() => {
+    const { base, labels, mask, border } = m.current;
+    const sh = isDark ? "Dark" : "Light";
+    base?.setUrl(`${ESRI}World_${sh}_Gray_Base/MapServer/tile/{z}/{y}/{x}`);
+    labels?.setUrl(`${ESRI}World_${sh}_Gray_Reference/MapServer/tile/{z}/{y}/{x}`);
+    mask?.setStyle(maskStyle(isDark)); border?.setStyle(borderStyle(isDark));
+  }, [isDark]);
+
+  /* ---- search point ---- */
+  useEffect(() => {
+    const o = m.current;
+    o.point?.remove(); o.point = null;
+    if (!point) { o.results.clearLayers(); o.markers = {}; o.halo = null; o.fitPts = null; return; }
+    o.point = L.marker([point.lat, point.lon], { icon: L.divIcon({ className: "you", iconSize: [14, 14] }), keyboard: false, zIndexOffset: 1000 })
+      .bindTooltip("Your point", { direction: "top", offset: [0, -8] }).addTo(o.map);
+  }, [point]);
+
+  /* ---- result markers; fit when a new result set arrives ---- */
+  const lastData = useRef(null);
+  useEffect(() => {
+    const o = m.current;
+    o.results.clearLayers(); o.markers = {}; o.halo = null;
+    const pts = point ? [[point.lat, point.lon]] : [];
+    for (const r of visible) {
+      const mk = L.circleMarker([r.lat, r.lon], markerStyle(r.tier, false))
+        .bindTooltip(`<span class="tt-n">${escHtml(r.name)}</span><span class="tt-m">${r.tier} · ${escHtml(r.location_text)}</span>`, { direction: "top", offset: [0, -6] })
+        .on("click", () => handlers.current.openDetails(r.id))
+        .on("mouseover", () => handlers.current.setHoveredId(r.id))
+        .on("mouseout", () => handlers.current.setHoveredId((h) => (h === r.id ? null : h)))
+        .addTo(o.results);
+      o.markers[r.id] = mk;
+      pts.push([r.lat, r.lon]);
+    }
+    o.fitPts = data ? pts : null;
+    if (data && data !== lastData.current) {
+      lastData.current = data;
+      if (pts.length > 1) o.map.fitBounds(pts, { ...fitPad(), maxZoom: 14 });
+      else if (pts.length === 1) o.map.setView(pts[0], 11);
+    }
+  }, [visible, data, point]);
+
+  /* ---- highlight + halo ---- */
+  useEffect(() => {
+    const o = m.current;
+    for (const [id, mk] of Object.entries(o.markers)) {
+      const r = byId[id];
+      if (!r) continue;
+      const on = id === hoveredId || id === selectedId;
+      mk.setStyle(markerStyle(r.tier, on));
+      if (on) mk.bringToFront();
+    }
+    const id = hoveredId || selectedId;
+    const r = id && byId[id];
+    if (!r || !o.markers[id]) { o.halo?.remove(); o.halo = null; return; }
+    if (!o.halo) o.halo = L.circleMarker([r.lat, r.lon], { radius: 18, stroke: false, fillOpacity: 0.22, interactive: false }).addTo(o.results);
+    o.halo.setLatLng([r.lat, r.lon]).setStyle({ fillColor: COLOUR[r.tier] });
+    o.halo.bringToBack();
+  }, [hoveredId, selectedId, byId, visible]);
+
+  /* ---- zoom to the selected facility ---- */
+  useEffect(() => {
+    const r = selectedId && byId[selectedId];
+    if (r) m.current.map.setView([r.lat, r.lon], Math.max(m.current.map.getZoom(), 13));
+  }, [selectedId, byId]);
+
+  return <div id="map" ref={el} aria-label="Map of India. Click to choose a search point." />;
+}

@@ -112,3 +112,35 @@ Judged on facility_type from name + description. W = wrong, D = debatable, blank
 
 | # | name | type | conf | mark | note |
 |---|---|---|---|---|---|
+| 1 | Ishan Hospital | multispecialty_hospital | medium | D | no specialty evidence; general hospital or unknown fits better |
+| 2 | Ejaz Clinic | general_clinic_polyclinic | high |  |  |
+| 3 | Dr. Sri Venkateswara Multi Speciality Hospital | multispecialty_hospital | high |  |  |
+| 4 | Saran Hospital | multispecialty_hospital | medium | D | 'listed as medical facility' only; breadth unknown |
+| 5 | Nidaan Heart Clinic, Gotri, Vadodara | cardiac | high |  |  |
+| 6 | Hyperion Dental Clinic | dental | high |  |  |
+| 7 | Dr Goyal's Advance Dental Care | dental | high |  |  |
+| 8 | Sri Sathya Sai Institute of Higher Medical Sciences | multispecialty_hospital | high |  |  |
+| 9 | Kailashwati Memorial Hospital | general_hospital_or_nursing_home | high |  |  |
+| 10 | Shri Harkrishan Dental Clinic (Bhilai) | dental | high |  |  |
+| 11 | Daffodil Medical Center - Asansol, Paschim Bardhaman, West Bengal | multispecialty_hospital | medium | D | service list reads like clinic/diagnostic centre |
+| 12 | DREAMLAND NURSING HOME | general_hospital_or_nursing_home | medium |  |  |
+| 13 | Institute of Child Health & Hospital | pediatric | high |  |  |
+| 14 | Jeevan Anmol Hospital | multispecialty_hospital | high |  |  |
+| 15 | Sri Kumaran Child Care | pediatric | high |  |  |
+| 16 | Bienestar MediClinic | general_clinic_polyclinic | medium |  |  |
+| 17 | Lifeline Hospital | cardiac | high | D | name says Hospital, description is a cardiologist listing |
+| 18 | Yamini Diet Clinic | other_single_specialty | high |  |  |
+| 19 | Amritam Heart Care Hospital | cardiac | high |  |  |
+| 20 | Dhanush Hospital | multispecialty_hospital | high |  |  |
+| 21 | Meraki Dental Studio - Best Dentist In Delhi India | dental | high |  |  |
+| 22 | Sree Balaji Dental Clinic | dental | high |  |  |
+| 23 | Pancham Hospital | multispecialty_hospital | high |  |  |
+| 24 | Ponnaiah Hospital | multispecialty_hospital | medium | D | only 'Top Clinics' listing; breadth unknown |
+| 25 | Getwell Eye Hospital | eye | medium | D | name eye, description pediatric; conflict should be low confidence |
+| 26 | Neo Clinic | pediatric | high |  |  |
+| 27 | The Heart Clinic | cardiac | high |  |  |
+| 28 | Mangal Prabhu Hospital | multispecialty_hospital | medium | D | only mentioned as a landmark; breadth unknown |
+| 29 | Pushkar Dental Superspeciality Centre | dental | high |  |  |
+| 30 | Sri Venkateswara Dental Clinic | dental | high |  |  |
+
+W = 0, D = 7. Ownership was given as private on most rows without evidence; this was not counted toward W (see caveats).
