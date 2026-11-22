@@ -281,7 +281,7 @@ FROM {tgt}.nfhs_district n WHERE n.nfhs_key = ?
 """
 
 # Nearest facilities within the radius that are Confirmed or Likely for any related service:
-# one row per facility (its best related tier, then that service's first quoted sentence).
+# one row per facility (its best related tier). The quote is chosen afterwards (hint_quotes).
 HINT_FACILITIES_SQL = """
 SELECT * FROM (
   SELECT fs.unique_id, c.name, c.city, fs.service, fs.tier, fs.evidence[0].sentence AS sentence,
