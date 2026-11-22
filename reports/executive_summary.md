@@ -73,6 +73,12 @@ These give a tier: **Confirmed** (a quoted sentence that names the service with 
 
 Results are sorted **by tier first, then by distance**. Sending a patient hours away to a place that does not offer the service costs more than a longer trip to one that does, so a confirmed hospital further away ranks above a closer unverified one. Each result shows the name, distance, tier, the quoted sentences and any warnings, including an uncertain location.
 
+## When the text is silent: district data as a hint
+
+Websites do not always say what a hospital does. Search for a caesarean section in Thanjavur and the nearest Confirmed hospital is 108 km away, because no facility within 40 km mentions the procedure in its text. Yet the national family health survey says 51% of births in Thanjavur are by caesarean, so the service clearly exists nearby.
+
+We use the survey to catch this, without letting it decide anything. When a district's survey figure shows a service is common locally (for C-sections, the caesarean birth rate; for deliveries, the share of births in a facility), the district is in the top half nationally, and no Confirmed facility lies within 30 km, the app adds a note: *C-sections are common in this district. These nearby hospitals offer maternity care and may do C-sections. Call to check.* It lists up to three hospitals within 30 km that are Confirmed or Likely for related maternity care, each with its own quoted sentence. Tiers and ranking never change: a district rate says the service happens somewhere in the district, not at which hospital. We use only figures that show care is being delivered, never figures that show need, such as diabetes rates.
+
 ## Asking in plain words
 
 A health worker does not think in service labels, so the search box takes plain language such as *"my father needs a kidney machine"*. One language-model call maps the words onto our services. If the text names a service, it is selected straight away. If it describes a symptom, such as *"I can't jump"*, the app does not guess: it offers two or three options with a short reason each, the least invasive first (an outpatient clinic before surgery), and waits for the user to pick. If the words sound like an emergency, such as a numb left arm with trouble breathing, the app first shows a warning to call 108, India's## How well it works: blind spot checks
@@ -103,7 +109,7 @@ Two cautions. After the dialysis check we relaxed two rules (heart hospitals can
 
 ## What is built
 
-- **The app** (a Databricks App): describe a need or pick one of 60 services, click the map or type a PIN code, and get facilities by tier then distance, each with quoted evidence, warnings, contact details and directions. A district panel adds public-health context from the national family health survey without changing the ranking.
+- **The app** (a Databricks App): describe a need or pick one of 60 services, click the map or type a PIN code, and get facilities by tier then distance, each with quoted evidence, warnings, contact details and directions. A district panel adds public-health context from the national family health survey, and turns it into a call-to-check hint when the text is silent, without changing the ranking.
 - **The data behind it:** cleaned facility and sentence tables, a checked location for every facility that can be placed, a type for each facility, a service tag for every sentence, an ownership check for every record with enough text, and the verdict table the app reads. It can be rebuilt end to end from scripts.
 
 ## Trade-offs and limits
@@ -114,3 +120,4 @@ Two cautions. After the dialysis check we relaxed two rules (heart hospitals can
 - **Language models are not perfectly repeatable.** The same record can get slightly different flags on two runs.
 - **Web text can be out of date.** A sentence proves that a website made a claim, not that the service runs today. Evidence is tied to a record's sources, not to a single page.
 - **A fixed service list misses rare services.** We keep a suggested name for anything outside the list so gaps are visible.
+- **Next step:** the district hint shows maternity hospitals as a suggestion only. Counting them as Possible for C-section would be a rule change, so we left it untested before the deadline.
