@@ -168,3 +168,67 @@ SERVICE_GROUP = {s: grp for grp, g in SERVICE_GROUPS.items() for s, _ in g}
 
 def service_name(label: str) -> str:
     return SERVICE_NAME.get(label, label.replace("_", " ").capitalize())
+
+
+# --- district hint (suggestion block only; never changes tiers or order) ----
+# Supply-signal NFHS-5 indicator per service: a high value means the service is commonly
+# delivered in the district. NFHS need indicators (blood sugar, BP, anaemia...) are NOT used.
+HINT_SUPPLY_INDICATOR = {
+    "caesarean_section":    "births_delivered_by_csection_5y_pct",
+    "normal_delivery":      "institutional_birth_5y_pct",
+    "obstetrics_maternity": "institutional_birth_5y_pct",
+}
+HINT_RADIUS_KM = 30.0   # hint shows only if no Confirmed for the service within this distance
+HINT_MAX = 3            # nearby related facilities listed under the hint
+# Related services come from service_department_map (link_type 'implied_by_service');
+# this dict is the fallback if the map has none, and HINT_RELATED_ALLOWED keeps the list to
+# maternity care (the map also links caesarean_section -> nicu, which is newborn care).
+HINT_RELATED_FALLBACK = {
+    "caesarean_section":    ["obstetrics_maternity", "high_risk_obstetrics", "normal_delivery"],
+    "normal_delivery":      ["obstetrics_maternity", "caesarean_section", "high_risk_obstetrics"],
+    "obstetrics_maternity": ["normal_delivery", "caesarean_section", "high_risk_obstetrics"],
+}
+HINT_RELATED_ALLOWED = {"obstetrics_maternity", "high_risk_obstetrics", "normal_delivery", "caesarean_section"}
+# (headline with {v} = rounded %, follow-up line). Plain words for a health worker.
+HINT_TEXT = {
+    "caesarean_section": ("C-sections are common in this district ({v}% of births, NFHS-5).",
+                          "These nearby hospitals offer maternity care and may do C-sections. Call to check."),
+    "normal_delivery": ("Most births in this district happen in a health facility ({v}%, NFHS-5).",
+                        "These nearby hospitals offer maternity care and may handle deliveries. Call to check."),
+    "obstetrics_maternity": ("Most births in this district happen in a health facility ({v}%, NFHS-5).",
+                             "These nearby hospitals offer related care and may offer maternity care. Call to check."),
+}
+
+# --- service picker aliases (typed words that should find a service) -------
+SERVICE_ALIASES = {
+    "caesarean_section": ["c-section", "c section", "csection", "caesarean", "cesarean", "caesar", "lscs", "c-sec"],
+    "normal_delivery": ["delivery", "childbirth", "birth", "labour", "labor"],
+    "obstetrics_maternity": ["pregnancy", "maternity", "obstetrics", "antenatal", "prenatal", "ob gyn", "obgyn"],
+    "high_risk_obstetrics": ["high risk pregnancy", "complicated pregnancy"],
+    "nicu": ["newborn", "neonatal", "neonate", "baby icu", "premature", "preterm", "sncu"],
+    "picu": ["child icu", "paediatric icu", "pediatric icu"],
+    "pediatrics": ["pediatrics", "paediatrics", "child", "children", "kids"],
+    "dialysis": ["kidney", "renal", "haemodialysis", "hemodialysis", "kidney machine"],
+    "nephrology_renal": ["kidney", "renal"],
+    "mri": ["mri", "magnetic resonance", "scan"],
+    "ct_scan": ["ct", "cat scan", "scan"],
+    "xray": ["x-ray", "x ray", "radiograph"],
+    "ultrasound": ["usg", "sonography", "scan"],
+    "cardiac_surgery": ["heart surgery", "bypass", "cabg", "open heart", "valve"],
+    "interventional_cardiology": ["angioplasty", "stent", "angiography", "cath lab"],
+    "burn_care": ["burns", "burn unit"],
+    "trauma_emergency": ["emergency", "accident", "casualty", "trauma", "er"],
+    "icu_critical_care": ["icu", "intensive care", "critical care"],
+    "ventilator_support": ["ventilator", "oxygen"],
+    "chemotherapy": ["cancer", "chemo", "oncology"],
+    "radiotherapy": ["cancer", "radiation", "oncology"],
+    "cancer_surgery": ["cancer", "oncology", "tumour", "tumor"],
+    "eye_surgery": ["cataract", "lasik", "eye"],
+    "infertility_ivf": ["ivf", "fertility", "test tube"],
+    "dental": ["teeth", "tooth", "dentist"],
+    "mental_health": ["psychiatry", "depression", "de-addiction"],
+    "joint_replacement": ["knee replacement", "hip replacement"],
+    "stroke_care": ["stroke", "paralysis"],
+    "blood_bank": ["blood"],
+    "ambulance": ["108"],
+}

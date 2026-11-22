@@ -18,7 +18,9 @@ from district_context import district_context
 import queries as q
 from conn import connect
 from config import (PIN_TIGHT_KM, MIN_CITY_FACILITIES, TIER_ORDER, APP_SERVICES,
-                    DEFAULT_SERVICE, TGT, service_name, facility_type_name)
+                    DEFAULT_SERVICE, TGT, service_name, facility_type_name,
+                    HINT_SUPPLY_INDICATOR, HINT_RADIUS_KM, HINT_MAX, HINT_RELATED_FALLBACK,
+                    HINT_RELATED_ALLOWED, HINT_TEXT, SERVICE_ALIASES)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PER_TIER = 20
@@ -317,7 +319,8 @@ def api_services():
         elif s not in APP_SERVICES and not cov["complete"]:
             note = f"Results still loading, coverage {cov['pct']:.0f}%."
         out.append({"label": s, "entry": entry, "group": group, "name": name,
-                    "is_sample": is_sample, "coverage_note": note})
+                    "is_sample": is_sample, "coverage_note": note,
+                    "aliases": [s.replace("_", " ")] + SERVICE_ALIASES.get(s, [])})
     return {"services": out, "default": DEFAULT_SERVICE}
 
 
@@ -437,7 +440,8 @@ def api_search(service: str, lat: float = Query(...), lon: float = Query(...)):
         credible = {"id": nl["unique_id"], "name": nl["name"], "city": nl["city"],
                     "distance_km": round(nl["distance_km"], 1),
                     "confirmed_km": round(nc["distance_km"], 1) if nc else None}
-    far_note = (nc is None or nc["distance_km"] > 100) and nl is not None
+    # "Call the Likely ones first" only when a trusted Likely is nearer than the nearest trusted Confirmed.
+    far_note = nl is not None and (nc is None or nl["distance_km"] < nc["distance_km"])
     for t in tiers:   # the nearest Confirmed card says how many trusted Likely are closer
         if t["tier"] == "Confirmed" and nc:
             closer = sum(1 for r in rs if r["tier"] == "Likely"
@@ -481,7 +485,55 @@ def api_district_context(service: str, lat: float | None = None, lon: float | No
     pin = (pin or "").strip() or None
     key = ("district", service, None if lat is None else round(lat, 4),
            None if lon is None else round(lon, 4), pin)
-    return cached(key, 600, lambda cn: district_context(lat, lon, pin, service, conn=cn))
+    ctx = cached(key, 600, lambda cn: district_context(lat, lon, pin, service, conn=cn))
+    try:
+        hint = cached(("hint",) + key[1:], 600, lambda cn: _district_hint(cn, service, ctx))
+    except Exception as e:   # the hint is optional; context still returns
+        print(f"HINT failed: {type(e).__name__}: {e}", flush=True)
+        hint = None
+    return {**ctx, "hint": hint}
+
+
+def _district_hint(cn, service, ctx):
+    """Suggestion block, separate from tiers (never changes tier or order). Shown when:
+    - the service has a SUPPLY-signal NFHS indicator (config.HINT_SUPPLY_INDICATOR; need indicators
+      such as blood sugar are never used),
+    - the district's value is "high" = at or above the median of all 706 NFHS-5 districts (top half),
+    - no facility is Confirmed for the service within HINT_RADIUS_KM (30 km) of the search point,
+    - at least one facility within 30 km is Confirmed or Likely for a related maternity service
+      (service_department_map link_type 'implied_by_service', limited to HINT_RELATED_ALLOWED).
+    Lists up to HINT_MAX nearest such facilities with their related tier and one quoted sentence."""
+    col = HINT_SUPPLY_INDICATOR.get(service)
+    lat, lon, nk = ctx.get("point_lat"), ctx.get("point_lon"), ctx.get("nfhs_key")
+    if not col or lat is None or not nk:
+        return None
+    d = q.hint_district(cn, service, col, nk, lat, lon, HINT_RADIUS_KM)
+    if not d or d["value"] is None or d["median"] is None:
+        return None
+    if d["value"] < d["median"] or d["n_confirmed_near"]:
+        return None
+    related = [s for s in (q.related_services(cn, service) or HINT_RELATED_FALLBACK.get(service, []))
+               if s in HINT_RELATED_ALLOWED and s != service]
+    if not related:
+        return None
+    facs = q.hint_facilities(cn, related, lat, lon, HINT_RADIUS_KM, HINT_MAX)
+    if not facs:
+        return None
+    head, follow = HINT_TEXT[service]
+    items = []
+    for f in facs:
+        fb = q.is_fallback(f["location_source"])
+        km = f["distance_km"]
+        where = (f"in {f['city'] or 'this area'}, exact address unknown" if fb
+                 else f"about {round(km)} km" if f.get("location_confidence") not in TRUSTED_LOCATION
+                 else f"{km:.1f} km")
+        items.append({"id": f["unique_id"], "name": f["name"], "city": f["city"],
+                      "distance_km": round(km, 1), "where": where,
+                      "service": f["service"], "service_name": service_name(f["service"]),
+                      "tier": f["tier"], "sentence": f["sentence"]})
+    return {"headline": head.format(v=round(float(d["value"]))), "text": follow,
+            "indicator": col, "value": float(d["value"]), "median_706": float(d["median"]),
+            "radius_km": HINT_RADIUS_KM, "facilities": items}
 
 
 @app.get("/api/stats")

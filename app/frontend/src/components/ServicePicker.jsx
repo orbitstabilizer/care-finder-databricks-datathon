@@ -12,7 +12,10 @@ export default function ServicePicker() {
   const inputRef = useRef(null), listRef = useRef(null);
 
   const f = (query || "").toLowerCase().trim();
-  const visible = services.filter((s) => !f || s.entry.toLowerCase().includes(f));
+  // match the visible name, the service id and its aliases (config.SERVICE_ALIASES), e.g. "lscs" -> C-section
+  const fn = f.replace(/[-_]/g, " ");
+  const visible = services.filter((s) => !f || s.entry.toLowerCase().includes(f)
+    || [s.label, ...(s.aliases || [])].some((a) => { const x = a.toLowerCase(); return x.includes(f) || x.replace(/[-_]/g, " ").includes(fn); }));
   useEffect(() => { listRef.current?.querySelector(".opt.active")?.scrollIntoView({ block: "nearest" }); }, [active]);
 
   const close = () => { setOpen(false); setQuery(null); setActive(-1); };

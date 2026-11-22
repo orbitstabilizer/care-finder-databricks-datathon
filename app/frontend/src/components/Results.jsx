@@ -58,6 +58,31 @@ function Credible() {
   );
 }
 
+/** District hint: a suggestion to call nearby hospitals offering related care. Separate from the
+ *  tiers; it never changes tier or order. The server decides when it shows (main._district_hint). */
+function DistrictHint() {
+  const { district: c } = useStore();
+  const h = c?.hint;
+  if (!h || !h.facilities?.length) return null;
+  return (
+    <div className="dhint">
+      <p className="dhint-head">{h.headline}</p>
+      <p className="dhint-text">{h.text}</p>
+      <ul className="dhint-list">
+        {h.facilities.map((f) => (
+          <li key={f.id}>
+            <div className="dhint-row">
+              <span className="dhint-name">{f.name}{f.city ? `, ${f.city}` : ""} · <span className="num">{f.where}</span></span>
+              <span className="dhint-tag"><span className={`dot ${f.tier}`} />{f.tier} for {f.service_name.toLowerCase()}</span>
+              {f.sentence && <q className="dhint-quote">{f.sentence}</q>}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export default function Results({ scrollRef }) {
   const { point, data, loading, searchError, emergency } = useStore();
   let body;
@@ -73,6 +98,7 @@ export default function Results({ scrollRef }) {
       <div className="res-head"><h2>{d.service_name}</h2>{d.n ? <span className="count num">{d.n} {d.n === 1 ? "facility" : "facilities"}</span> : null}</div>
       {!d.n ? <EmptyState title={`No facility has evidence for ${d.service_name}.`} text="Try a related service or another location." /> : (<>
         <Credible />
+        <DistrictHint />
         <TierChips scrollRef={scrollRef} />
         <DistrictStrip />
         <p className="meta">Within each tier, facilities with an exact location come first, then by distance. Column-shifted records and facilities with no usable position are left out. Query {d.query_s}s.</p>

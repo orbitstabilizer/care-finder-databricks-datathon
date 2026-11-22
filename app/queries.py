@@ -257,3 +257,66 @@ def web_check(cn) -> dict:
         s = out.setdefault(r["service"], {"tuned": r["service"] in WEB_CHECK_TUNED, "by_tier": {}})
         s["by_tier"][r["tier"]] = {k: int(r[k] or 0) for k in ("checked", "yes", "no", "cannot_tell")}
     return out
+
+
+# ------------------------------------------------------------ district hint ---
+# Suggestion block only: never changes tiers or order. See config.HINT_* and main._district_hint.
+RELATED_SQL = f"""
+SELECT value FROM {TGT}.service_department_map
+WHERE service = ? AND link_type = 'implied_by_service' AND value IS NOT NULL
+"""
+
+# One row: the district's value for the supply indicator, the median over all 706 NFHS districts,
+# and how many facilities are Confirmed for the searched service within the radius.
+HINT_DISTRICT_SQL = """
+SELECT n.{col} AS value,
+       (SELECT percentile_cont(0.5) WITHIN GROUP (ORDER BY {col}) FROM {tgt}.nfhs_district) AS median,
+       (SELECT count(*) FROM {svc} fs
+          JOIN {fc} c ON c.unique_id = fs.unique_id AND NOT coalesce(c.is_shifted, false)
+          JOIN {loc} l ON l.facility_id = fs.unique_id
+        WHERE fs.service = ? AND fs.tier = 'Confirmed'
+          AND l.final_lat IS NOT NULL AND coalesce(l.location_confidence, 'none') <> 'none'
+          AND {hav}(?, ?, l.final_lat, l.final_lon) <= ?) AS n_confirmed_near
+FROM {tgt}.nfhs_district n WHERE n.nfhs_key = ?
+"""
+
+# Nearest facilities within the radius that are Confirmed or Likely for any related service:
+# one row per facility (its best related tier, then that service's first quoted sentence).
+HINT_FACILITIES_SQL = """
+SELECT * FROM (
+  SELECT fs.unique_id, c.name, c.city, fs.service, fs.tier, fs.evidence[0].sentence AS sentence,
+         l.location_source, l.location_confidence,
+         {hav}(?, ?, l.final_lat, l.final_lon) AS distance_km,
+         row_number() OVER (PARTITION BY fs.unique_id
+                            ORDER BY CASE fs.tier WHEN 'Confirmed' THEN 0 ELSE 1 END, fs.service) AS rk
+  FROM {svc} fs
+  JOIN {fc} c ON c.unique_id = fs.unique_id AND NOT coalesce(c.is_shifted, false)
+  JOIN {loc} l ON l.facility_id = fs.unique_id
+  WHERE fs.service IN ({in_list}) AND fs.tier IN ('Confirmed', 'Likely')
+    AND l.final_lat IS NOT NULL AND coalesce(l.location_confidence, 'none') <> 'none')
+WHERE rk = 1 AND distance_km <= ?
+ORDER BY distance_km, name
+LIMIT ?
+"""
+
+
+def related_services(cn, service: str) -> list[str]:
+    return [r["value"] for r in _rows(cn, RELATED_SQL, [service])]
+
+
+def hint_district(cn, service: str, col: str, nfhs_key: str, lat: float, lon: float,
+                  radius_km: float) -> dict | None:
+    """col must come from config.HINT_SUPPLY_INDICATOR (it is formatted into the SQL)."""
+    sql = HINT_DISTRICT_SQL.format(col=col, tgt=TGT, svc=T_SERVICE, fc=T_FAC_CLEAN, loc=T_FAC_LOC,
+                                   hav=F_HAVERSINE)
+    r = _rows(cn, sql, [service, float(lat), float(lon), float(radius_km), nfhs_key])
+    return r[0] if r else None
+
+
+def hint_facilities(cn, related: list[str], lat: float, lon: float, radius_km: float,
+                    limit: int) -> list[dict]:
+    """related must be service labels from config.HINT_RELATED_ALLOWED (formatted into the SQL)."""
+    in_list = ", ".join("'" + s.replace("'", "") + "'" for s in related)
+    sql = HINT_FACILITIES_SQL.format(svc=T_SERVICE, fc=T_FAC_CLEAN, loc=T_FAC_LOC, hav=F_HAVERSINE,
+                                     in_list=in_list)
+    return _rows(cn, sql, [float(lat), float(lon), float(radius_km), int(limit)])
