@@ -67,7 +67,7 @@ For each facility and service we combine:
 - **Department backing**: whether the facility lists a department that supports the service, such as nephrology for dialysis.
 - **Type fit**: whether the service is expected, plausible or unexpected for that kind of facility.
 
-These give a tier: **Confirmed** (detailed evidence, backed by a department or a second statement), **Likely** (the facility says it plainly), **Possible** (no direct claim, but the right department and a closely related service), or **Unverified** (weak evidence, text that may belong to another hospital, or a facility that rarely offers the service). Each verdict carries quoted sentences as proof. Across 60 services and 9,989 facilities this gives 17,980 Confirmed, 53,059 Likely, 4,446 Possible and 22,760 Unverified facility–service pairs.
+These give a tier: **Confirmed** (a quoted sentence that names the service with detail, such as a bed or machine count, a dedicated unit, or for surgical services a named procedure, backed by a department or a second statement), **Likely** (the facility says it plainly), **Possible** (no direct claim, but the right department and a closely related service), or **Unverified** (weak evidence, text that may belong to another hospital, or a facility that rarely offers the service). Each verdict carries quoted sentences as proof. Across 60 services and 9,989 facilities this gives 12,128 Confirmed, 55,352 Likely, 8,005 Possible and 22,760 Unverified facility–service pairs.
 
 ## Step 7 — Rank and show the results
 
@@ -75,11 +75,21 @@ Results are sorted **by tier first, then by distance**. Sending a patient hours 
 
 ## Asking in plain words
 
-A health worker does not think in service labels, so the search box takes plain language such as *"my father needs a kidney machine"*. One language-model call maps the words onto our services. If the text names a service, it is selected straight away. If it describes a symptom, such as *"I can't jump"*, the app does not guess: it offers two or three options with a short reason each, the least invasive first (an outpatient clinic before surgery), and waits for the user to pick. If the words sound like an emergency, such as a numb left arm with trouble breathing, the app first shows a warning to call 108, India's free ambulance number, or the national emergency number 112. It only matches words to services; it never gives medical advice.
+A health worker does not think in service labels, so the search box takes plain language such as *"my father needs a kidney machine"*. One language-model call maps the words onto our services. If the text names a service, it is selected straight away. If it describes a symptom, such as *"I can't jump"*, the app does not guess: it offers two or three options with a short reason each, the least invasive first (an outpatient clinic before surgery), and waits for the user to pick. If the words sound like an emergency, such as a numb left arm with trouble breathing, the app first shows a warning to call 108, India's## How well it works: blind spot checks
 
-## How well it works: a blind spot check
+We checked samples from each tier against each facility's own website or one web search, without knowing our tier. "Yes" counts only facilities that could be checked.
 
-We checked 80 dialysis results, 20 from each tier, against each facility's own website or one web search, without knowing our tier. 15 of 15 checked Confirmed facilities offer dialysis, as do 9 of 9 Likely and 11 of 11 Possible. Among Unverified facilities only 4 of 9 did; the 5 that did not were eye hospitals and diagnostic centres, exactly the cases our checks are built to catch. 36 of 80 could not be checked, mostly small facilities with no website. Two of the Unverified that did offer dialysis were heart hospitals, so we relaxed that rule.
+| Service | Confirmed | Likely | Possible | Unverified | Could not be checked |
+|---|---|---|---|---|---|
+| Dialysis (80) | 15 of 15 | 9 of 9 | 11 of 11 | 4 of 9 | 36 |
+| Caesarean section (31) | 7 of 7 | not sampled | 4 of 4 | none checkable | 20 |
+| Cardiac surgery (40) | 8 of 8 | 4 of 5 | 1 of 6 | 0 of 4 | 17 |
+
+Every Confirmed facility we could check offers the service, 30 of 30 across three services. For cardiac surgery the share falls tier by tier, which is what the tiers are meant to show. The dialysis Unverified facilities that did not offer it were eye hospitals and diagnostic centres, the cases our checks are built to catch.
+
+Two cautions. After the dialysis check we relaxed two rules (heart hospitals can run dialysis; a dedicated dialysis unit counts as detailed evidence), so that check is no longer independent. The caesarean and cardiac checks were scored against rules fixed beforehand, and nothing was changed after seeing them. And about 40% of sampled facilities could not be checked at all, mostly small ones with no website, so these figures describe facilities with an online presence.
+
+ small facilities with no website. Two of the Unverified that did offer dialysis were heart hospitals, so we relaxed that rule.
 
 ## Demo stories
 
@@ -98,7 +108,8 @@ We checked 80 dialysis results, 20 from each tier, against each facility's own w
 
 ## Trade-offs and limits
 
-- **No ground truth.** We can review samples by hand, but we cannot measure accuracy across the whole dataset.
+- **No ground truth.** Blind spot checks cover three services and 151 facilities; accuracy across the whole dataset cannot be measured.
+- **Emergency and trauma share one label.** Splitting general emergency care from major trauma care was proposed but not done.
 - **The ownership check over-flags.** In a review of 300 records, its "mostly foreign" calls were usually right, but its "partly foreign" calls often flagged renamed cities or a hospital's own branches.
 - **Language models are not perfectly repeatable.** The same record can get slightly different flags on two runs.
 - **Web text can be out of date.** A sentence proves that a website made a claim, not that the service runs today. Evidence is tied to a record's sources, not to a single page.
