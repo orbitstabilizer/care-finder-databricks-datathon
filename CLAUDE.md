@@ -88,16 +88,13 @@ the facility-type job was stopped after every pilot batch failed its echo check)
 - Workspace source `/Workspace/Users/yakin@andrew.cmu.edu/vf/locator`; local source `app/` (deploy steps in `app/README.md`).
 - **FastAPI + React single page**: `app/main.py` serves `app/static/` (Vite build output). Front-end source is
   `app/frontend/` (React + Leaflet). **Rebuild before deploying: `cd app/frontend && npm ci && npm run build`**,
-  then sync with `--exclude-from app/.syncignore` (keeps `frontend/` out of the workspace). Vanilla rollback copy in
-  `app/static_vanilla/`.
+  then sync with `--exclude-from app/.syncignore` (keeps `frontend/` out of the workspace). Older UIs (Streamlit, vanilla JS) were removed 2026-11-22; recover from git history if needed.
   `app.yaml` runs `startup_probe.py` then `uvicorn main:app` on `$DATABRICKS_APP_PORT` (default 8000).
   SQL stays in `queries.py`, names in `config.py`, LLM matcher in `matcher.py`.
 - Endpoints: `GET /api/services` (grouped entries + coverage note), `POST /api/match {text}`,
   `GET /api/resolve?pin=|place=`, `GET /api/search?service=&lat=&lon=` (summary + per-tier lists, 20 each, with
   quotes, warnings, why, details), `GET /api/stats` (build_stats funnel + validation line from
   `workspace.vf.validation_dialysis`). Reserved: `#district-strip` under the summary for a future `/api/district_context`.
-- Old Streamlit UI kept in `app/streamlit_legacy/` (app.py, app.yaml, requirements.txt) for rollback: copy those
-  three back into `app/` and redeploy.
 - Local run: `DATABRICKS_CONFIG_PROFILE=datathon uvicorn main:app --port 8765` from `app/` (needs fastapi + uvicorn).
 - `workspace.vf.facility_service` is the contract table the verdict job fills (one row per unique_id, service).
 - **Rule: do not build another app; extend this one.**
@@ -436,7 +433,7 @@ Lessons that each cost an iteration — do not regress them:
 |---|---|
 | `task.md`, `dais-2026.md`, `intro.md` | the brief and dataset notes |
 | `scripts/classify_eval.py` | the validated prompt and its test harness |
-| `notebooks/01_explore.py`, `notebooks/99_bench_ai.py` | sources of the workspace notebooks |
+| `notebooks/99_bench_ai.py` | source of the workspace benchmark notebook (01_explore.py removed from the repo; its workspace copy remains) |
 | `explore.ipynb`, `download_data.py`, `data/*.parquet` | local copies for the user to inspect — not the working copy |
 | `CONVERSATION_BRIEF.md` | briefing for the conversation agent — coding agents ignore it |
 | `.venv/` | leftover, ignore |

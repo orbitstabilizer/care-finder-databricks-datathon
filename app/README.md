@@ -1,18 +1,6 @@
 # vf-locator (Care finder)
 
-Streamlit + folium Databricks App, one screen: **find a service**. One searchable dropdown
-("<Group> / <Service>", every label in `workspace.vf.facility_service` except other_clinical;
-the six headline services appear only under "Common searches"; default Dialysis), a point from
-map click, PIN (`pin_point` median of post offices, or the directory median; wide PINs accepted
-with a note) or place name (`city_point`). Results: tier (Confirmed, Likely, Possible,
-Unverified), then facilities with exact coordinates before city/PIN-centroid ones (shown as
-"in <city>, exact location unknown", no km), then distance. Map fits to the point plus results.
-Services outside the 8 keyword-tier services show "Results still loading, coverage X%" until
-tagging completes. A service with no real rows falls back to the sample table with a SAMPLE
-DATA banner.
-
-Files: `app.py` (UI), `queries.py` (all SQL), `config.py` (table names), `conn.py`
-(warehouse connection via SDK `Config()`), `startup_probe.py` (smoke test incl. PIN 500001 dialysis; output in app logs).
+FastAPI + React Databricks App. `main.py` serves the API and the built front end in `static/`; SQL lives in `queries.py`, table names in `config.py`, the plain-words matcher in `matcher.py`, place search in `places.py`, the warehouse connection in `conn.py`, and `startup_probe.py` runs a smoke test at start-up (output in the app logs).
 
 ## Deploy
 
@@ -30,8 +18,6 @@ warehouse `8ea2282aca435351` (app resource `sql-warehouse`).
 
 Run locally: `DATABRICKS_CONFIG_PROFILE=datathon uvicorn main:app --port 8765` (py13 env + fastapi, uvicorn).
 
-**Now FastAPI + static page** (`main.py`, `static/`); the Streamlit description above is the legacy UI in `streamlit_legacy/`.
-
 ## Front end (React + Vite)
 
 Source is `frontend/` (React 18 + Leaflet, plain JSX, one store in `src/App.jsx`; components in
@@ -44,5 +30,4 @@ cd app/frontend && npm ci && npm run build      # node from /opt/homebrew/bin
 
 `app/.syncignore` keeps `frontend/` (and its `node_modules/`) out of the workspace; pass it to
 `databricks sync` with `--exclude-from` as above. Local dev with hot reload: run uvicorn on 8765, then
-`npm run dev` in `frontend/` (Vite proxies `/api` and `/india.geojson`). The pre-React vanilla files are
-in `static_vanilla/` for rollback: copy them into `static/` and redeploy.
+`npm run dev` in `frontend/` (Vite proxies `/api` and `/india.geojson`).

@@ -1,5 +1,0 @@
-folium
-streamlit-folium
-databricks-sql-connector
-databricks-sdk
-pandas

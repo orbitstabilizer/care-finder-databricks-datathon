@@ -21,7 +21,7 @@ The dataset (10,077 Indian facilities, scraped and merged by an LLM) hides servi
 | `app/` | The Databricks App: FastAPI backend (`main.py`, `queries.py`, `matcher.py`) and React + Leaflet front end (`frontend/`, built into `static/`). Deploy steps in [`app/README.md`](app/README.md) |
 | `submission/` | The single-notebook submission |
 | `reports/` | Build reports, validation results, method write-ups |
-| `notebooks/` | Early exploration and the LLM throughput benchmark |
+| `notebooks/` | The LLM throughput benchmark |
 | `deploy/` | Deploy and SQL helper scripts |
 | `task.md`, `dais-2026.md` | The challenge brief and dataset notes |
 
