@@ -83,11 +83,13 @@ We checked 80 dialysis results, 20 from each tier, against each facility's own w
 
 ## Demo stories
 
-**Thanjavur, dialysis (PIN 613001).** Thanjavur ranks 7th highest of 706 districts for high blood sugar in men, a leading cause of kidney failure. In our data the nearest Confirmed dialysis centre is about 143 km away, but 4 hospitals inside the district are Likely. Those four are worth a phone call before anyone travels 143 km. We say "in our data" on purpose: Thanjavur has a government medical college, so a gap here means missing evidence, not missing care.
+**Rayagada, newborn intensive care (PIN 765019).** Rayagada is a tribal district in southern Odisha. Only 72% of births there are attended by a skilled health worker, 36th lowest of 706 districts. In our data the nearest Confirmed NICU is MKCG Medical College in Berhampur, 143 km away. But Christian Hospital Bissamcuttack, about 8 km from this PIN, is Likely: its own text says it introduced neonatal incubators. The point to make: when the confirmed answer is a long journey for a fragile newborn, the tool surfaces the closer, less certain option and tells the user to call it first.
 
 **Gumla, dialysis (PIN 835207).** Gumla is a rural district with only 1 facility in our data. The nearest Confirmed dialysis is about 87 km away in Ranchi, and a Likely one is a little closer at 81 km. The tool shows both: the confirmed answer first, and the closer but less certain option right below it, clearly labelled. It never hides an option, and it never presents a guess as a fact.
 
 **Aravind Eye Hospital, Hyderabad.** A plain keyword search recommends this eye hospital for dialysis, because its record holds text copied from Delhi government hospitals. Our ownership check flags 79 of its 149 sentences as belonging to other organisations, so it lands in Unverified with a warning. The blind web check confirmed it: Aravind does not offer dialysis. This is why we check that a record's text belongs to the facility before we trust it.
+
+**And when the answer is close: Thanjavur, dialysis (PIN 613001).** Thanjavur ranks 7th highest of 706 districts for high blood sugar in men. Here the tool finds a Confirmed dialysis unit, Sudar Hospital, under 1 km away, backed by its own text naming a dialysis unit.
 
 ## What is built
 

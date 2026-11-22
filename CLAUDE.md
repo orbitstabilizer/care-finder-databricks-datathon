@@ -105,10 +105,11 @@ the facility-type job was stopped after every pilot batch failed its echo check)
 
 ## Demo cases (keep these working)
 
-The presentation uses three stories, written out in `reports/executive_summary.md` ("Demo stories"):
-Thanjavur dialysis (PIN 613001), Gumla dialysis (PIN 835207), and Aravind Eye Hospital, Hyderabad
-(unique_id b8a5401f-42f1-422a-8cd9-686a15b4cb76, should stay Unverified for dialysis). After any rebuild or app change,
-check these three still behave as described and refresh the numbers in that section if they moved.
+The presentation uses these stories, written out in `reports/executive_summary.md` ("Demo stories"):
+Rayagada NICU (PIN 765019: nearest Confirmed NICU 143 km, Christian Hospital Bissamcuttack Likely ~8 km), Gumla dialysis
+(PIN 835207), Aravind Eye Hospital, Hyderabad (unique_id b8a5401f-42f1-422a-8cd9-686a15b4cb76, should stay Unverified for
+dialysis), and Thanjavur dialysis (PIN 613001) as the example of a Confirmed result nearby (Sudar Hospital, <1 km).
+After any rebuild or app change, check these still behave as described and refresh the numbers if they moved.
 
 ## The challenge
 

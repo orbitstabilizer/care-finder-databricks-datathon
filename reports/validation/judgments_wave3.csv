@@ -32,3 +32,8 @@ blind_id,verdict,deciding_url,evidence,loads_used
 29,cannot tell,,"Website DNS failure; only a directory for 'Dreamland Hospital' Durgapur listing Cardiovascular Surgery specialty",2
 30,cannot tell,,"Website DNS failure; search found no Jeevan Jyot Latur source",2
 32,cannot tell,,"Website DNS failure; directory names only neurosurgery, no full service list",2
+33,cannot tell,,"Listed website is Agarwal Nursing Home, not Nagpal; ESI listing gives no specialties",2
+34,cannot tell,,"Site lists Obstetrics & Gynaecology, High Risk Pregnancy Care, Operating Theaters; no caesarean mention",2
+35,cannot tell,,"Website DNS failure; search found only Om Hospitals in Mira Road and Pali, not Bhiwandi",2
+36,yes,https://deshmukhhospital.org,"Pediatrics services list 'Paediatric- Cardiology & Cardiac surgery' (no adult CABG/valve mentioned)",1
+38,yes,https://doaj.org/article/d3f378de4c464122988e0b94821959d6,"Case-control study of women who had emergency C-sections at KMC Hospital Attavar, Mangalore",1
