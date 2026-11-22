@@ -2,6 +2,7 @@
 
 All SQL lives in queries.py, names in config.py, the LLM matcher in matcher.py.
 This file turns their rows into JSON the page can render directly."""
+import json
 import os
 import re
 import threading
@@ -20,7 +21,8 @@ from conn import connect
 from config import (PIN_TIGHT_KM, MIN_CITY_FACILITIES, TIER_ORDER, APP_SERVICES,
                     DEFAULT_SERVICE, TGT, service_name, facility_type_name,
                     HINT_SUPPLY_INDICATOR, HINT_RADIUS_KM, HINT_MAX, HINT_RELATED_FALLBACK,
-                    HINT_RELATED_ALLOWED, HINT_TEXT, SERVICE_ALIASES)
+                    HINT_RELATED_ALLOWED, HINT_TEXT, SERVICE_ALIASES, HINT_QUOTE_TERMS,
+                    HINT_DEPT_LIST, HINT_STRENGTH_RANK)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PER_TIER = 20
@@ -520,6 +522,12 @@ def _district_hint(cn, service, ctx):
     if not facs:
         return None
     head, follow = HINT_TEXT[service]
+    try:
+        quotes = _hint_best_quotes(q.hint_quotes(cn, [f["unique_id"] for f in facs],
+                                                 sorted(HINT_RELATED_ALLOWED)), facs)
+    except Exception as e:   # a missing quote must not drop the hint
+        print(f"HINT quotes failed: {type(e).__name__}: {e}", flush=True)
+        quotes = {}
     items = []
     for f in facs:
         fb = q.is_fallback(f["location_source"])
@@ -530,10 +538,31 @@ def _district_hint(cn, service, ctx):
         items.append({"id": f["unique_id"], "name": f["name"], "city": f["city"],
                       "distance_km": round(km, 1), "where": where,
                       "service": f["service"], "service_name": service_name(f["service"]),
-                      "tier": f["tier"], "sentence": f["sentence"]})
+                      "tier": f["tier"], "sentence": quotes.get(f["unique_id"])})
     return {"headline": head.format(v=round(float(d["value"]))), "text": follow,
             "indicator": col, "value": float(d["value"]), "median_706": float(d["median"]),
             "radius_km": HINT_RADIUS_KM, "facilities": items}
+
+
+def _hint_best_quotes(rows, facs):
+    """Best quote per hint facility for its related maternity service. Candidates: sentences tagged
+    with a maternity service, not foreign-flagged. Keep only those naming maternity care in words
+    (HINT_QUOTE_TERMS); rank non-department-lists first, then explicit > stated > weak, then a
+    sentence tagged with the facility's own related service, then the shorter one. None if no
+    candidate names maternity care."""
+    own = {f["unique_id"]: f["service"] for f in facs}
+    best = {}
+    for r in rows:
+        sent = (r.get("sentence") or "").strip()
+        if not sent or not re.search(HINT_QUOTE_TERMS, sent):
+            continue
+        svcs = r.get("services")
+        svcs = list(svcs) if svcs is not None and not isinstance(svcs, str) else json.loads(svcs or "[]")
+        key = (bool(re.search(HINT_DEPT_LIST, sent)), HINT_STRENGTH_RANK.get(r.get("strength"), 3),
+               own.get(r["unique_id"]) not in svcs, len(sent))
+        if r["unique_id"] not in best or key < best[r["unique_id"]][0]:
+            best[r["unique_id"]] = (key, sent)
+    return {k: v[1] for k, v in best.items()}
 
 
 @app.get("/api/stats")

@@ -320,3 +320,28 @@ def hint_facilities(cn, related: list[str], lat: float, lon: float, radius_km: f
     sql = HINT_FACILITIES_SQL.format(svc=T_SERVICE, fc=T_FAC_CLEAN, loc=T_FAC_LOC, hav=F_HAVERSINE,
                                      in_list=in_list)
     return _rows(cn, sql, [float(lat), float(lon), float(radius_km), int(limit)])
+
+
+HINT_QUOTES_SQL = """
+SELECT DISTINCT s.unique_id, s.sentence, t.strength, t.services
+FROM {sent} s
+JOIN {dist} d ON d.sentence_key = s.sentence_key
+JOIN {tags} t ON t.sentence_id = d.sentence_id
+LEFT JOIN {ff} ff ON ff.unique_id = s.unique_id AND ff.source_column = s.source_column
+                 AND ff.position = s.position
+WHERE s.unique_id IN ({ids}) AND NOT coalesce(s.is_placeholder, false)
+  AND NOT coalesce(ff.is_foreign, false)
+  AND arrays_overlap(t.services, array({in_list}))
+"""
+
+
+def hint_quotes(cn, ids: list[str], related: list[str]) -> list[dict]:
+    """Tagged, non-foreign sentences of the hint facilities that carry a maternity service label.
+    related must be service labels from config.HINT_RELATED_ALLOWED (formatted into the SQL)."""
+    if not ids:
+        return []
+    in_list = ", ".join("'" + s.replace("'", "") + "'" for s in related)
+    sql = HINT_QUOTES_SQL.format(sent=f"{TGT}.facility_sentences", dist=f"{TGT}.distinct_sentences",
+                                 tags=f"{TGT}.sentence_tags", ff=f"{TGT}.sentence_foreign_flag",
+                                 ids=", ".join("?" for _ in ids), in_list=in_list)
+    return _rows(cn, sql, list(ids))

@@ -189,6 +189,14 @@ HINT_RELATED_FALLBACK = {
     "obstetrics_maternity": ["normal_delivery", "caesarean_section", "high_risk_obstetrics"],
 }
 HINT_RELATED_ALLOWED = {"obstetrics_maternity", "high_risk_obstetrics", "normal_delivery", "caesarean_section"}
+# Quote shown per hint facility: only a sentence tagged for a maternity service (not foreign-flagged)
+# that also names maternity care in words. Department lists rank last; explicit > stated > weak.
+# If no tagged sentence names maternity care, the facility is listed with no quote.
+HINT_QUOTE_TERMS = (r"(?i)obstetric|maternity|deliver(y|ies)|\blabou?r\b|gyn(a)?ec|antenatal|ante-natal|"
+                    r"prenatal|birth|caesarean|cesarean|c-section|\blscs\b")
+HINT_DEPT_LIST = (r"(?i)^(offers )?(multiple )?(medical )?(departments?|specialt(y|ies)|ancillaries|includes)\b|"
+                  r"departments? (include|of)|specialties include")
+HINT_STRENGTH_RANK = {"explicit": 0, "stated": 1, "weak": 2}
 # (headline with {v} = rounded %, follow-up line). Plain words for a health worker.
 HINT_TEXT = {
     "caesarean_section": ("C-sections are common in this district ({v}% of births, NFHS-5).",
