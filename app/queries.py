@@ -233,3 +233,27 @@ def service_search(cn, table: str, service: str, user_lat: float,
         r["specialties"] = list(r["specialties"]) if r["specialties"] is not None else []
         r["source_domains"] = list(r["source_domains"]) if r.get("source_domains") is not None else []
     return rows
+
+
+# Blind web check (hand-checked against each facility's own website, without seeing our tier).
+# Dialysis: tier at sampling time; two dialysis rules were tuned on this check, so it is not
+# independent. Wave 3 (C-section, cardiac surgery): tier after the current build, untuned.
+WEB_CHECK_SQL = f"""
+SELECT service, tier, count_if(verdict IN ('yes', 'no')) AS checked,
+       count_if(verdict = 'yes') AS yes, count_if(verdict = 'no') AS no,
+       count_if(verdict = 'cannot tell') AS cannot_tell
+FROM (SELECT 'dialysis' AS service, tier_at_sample AS tier, verdict FROM {TGT}.validation_dialysis
+      UNION ALL
+      SELECT service, tier_now AS tier, verdict FROM {TGT}.validation_wave3)
+GROUP BY service, tier
+"""
+WEB_CHECK_TUNED = {"dialysis"}
+
+
+def web_check(cn) -> dict:
+    """{service: {"tuned": bool, "by_tier": {tier: {checked, yes, no, cannot_tell}}}}."""
+    out = {}
+    for r in _rows(cn, WEB_CHECK_SQL):
+        s = out.setdefault(r["service"], {"tuned": r["service"] in WEB_CHECK_TUNED, "by_tier": {}})
+        s["by_tier"][r["tier"]] = {k: int(r[k] or 0) for k in ("checked", "yes", "no", "cannot_tell")}
+    return out

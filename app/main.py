@@ -450,7 +450,21 @@ def api_search(service: str, lat: float = Query(...), lon: float = Query(...)):
             "is_sample": is_sample, "point": {"lat": lat, "lon": lon},
             "summary": summary, "tiers": tiers, "n": len(rs),
             "closest_credible": credible, "far_confirmed_note": far_note,
+            "web_check": _web_check(service),
             "query_s": round(time.time() - t0, 2)}
+
+
+def _web_check(service):
+    """Blind web-check counts for this service, or None if it was never checked."""
+    try:
+        wc = cached("web_check", 300, q.web_check)
+    except Exception:
+        return None
+    w = wc.get(service)
+    if not w:
+        return None
+    return {"tuned": w["tuned"],
+            "by_tier": [{"tier": t, **w["by_tier"][t]} for t in TIER_ORDER if t in w["by_tier"]]}
 
 
 def _validation(cn):
