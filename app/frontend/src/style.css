@@ -380,7 +380,6 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .rules { margin: 0; }
 .rules dt { margin-top: 10px; }
 .rules dd { margin: 4px 0 0; color: var(--text2); font-size: 13px; }
-.valid { background: var(--accent-soft); color: var(--accent-ink); border-radius: 10px; padding: 10px 12px; margin-top: 16px; font-size: 13px; }
 @keyframes fade { from { opacity: 0; } }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
 
@@ -515,13 +514,3 @@ input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px 
 .alt-places { margin-top: 2px; }
 .listing-tag { margin-left: 4px; font-size: 10.5px; font-weight: 600; color: var(--muted); background: var(--bg2); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
 
-/* blind web check line (context only) */
-.webcheck { margin: 0 0 10px; font-size: 12.5px; color: var(--text2); }
-.wc-line { margin: 0; }
-.wc-tuned { color: var(--muted); }
-.wc-more summary { cursor: pointer; color: var(--muted); font-size: 12px; margin-top: 2px; }
-.wc-table { border-collapse: collapse; margin: 6px 0 4px; font-size: 12px; }
-.wc-table th, .wc-table td { text-align: left; padding: 2px 12px 2px 0; }
-.wc-table th { color: var(--muted); font-weight: 600; }
-.wc-table .dot { margin-right: 6px; }
-.wc-foot { margin: 0; color: var(--muted); font-size: 11px; }

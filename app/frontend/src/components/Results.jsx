@@ -4,7 +4,6 @@ import { EXAMPLES } from "../api.js";
 import { Pin, Warn } from "../icons.jsx";
 import TierChips from "./TierChips.jsx";
 import DistrictStrip from "./DistrictStrip.jsx";
-import WebCheck from "./WebCheck.jsx";
 import TierSection from "./TierSection.jsx";
 
 function EmptyState({ title, text, examples }) {
@@ -75,7 +74,6 @@ export default function Results({ scrollRef }) {
       {!d.n ? <EmptyState title={`No facility has evidence for ${d.service_name}.`} text="Try a related service or another location." /> : (<>
         <Credible />
         <TierChips scrollRef={scrollRef} />
-        <WebCheck />
         <DistrictStrip />
         <p className="meta">Within each tier, facilities with an exact location come first, then by distance. Column-shifted records and facilities with no usable position are left out. Query {d.query_s}s.</p>
         {d.tiers.filter((t) => t.count).map((t) => <TierSection key={t.tier} t={t} />)}

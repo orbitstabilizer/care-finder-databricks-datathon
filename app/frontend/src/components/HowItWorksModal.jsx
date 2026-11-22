@@ -42,7 +42,6 @@ export default function HowItWorksModal() {
             <dt><span className="badge Unverified"><span className="dot Unverified" />Unverified</span></dt><dd>Only weak mentions, mostly another hospital's text, or a facility type that rarely offers the service.</dd>
           </dl>
           <p>Within each tier, facilities with an exact location come first, then by distance. Facilities placed only at a city or postcode centre show no distance.</p>
-          {s.validation?.line && <div className="valid">{s.validation.line}</div>}
           {s.build_ts && <p className="fine">Numbers as of {s.build_ts.slice(0, 16).replace("T", " ")} UTC.</p>}
         </>)}
       </div>
