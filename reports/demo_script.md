@@ -1,18 +1,15 @@
-# Demo script — every feature, five stories
+# Demo video — 2:30
 
-Re-check the numbers after any rebuild. Last checked 2026-11-22.
+Pre-load the app (warm the warehouse: run each search once before recording). Last checked 2026-11-22.
 
-| # | Story | Type / do | Features shown |
+| Time | Screen | Do | Say (gist) |
 |---|---|---|---|
-| 1 | **Rayagada, newborn** | Type *"my newborn baby needs intensive care"* → NICU. PIN **765019**. Click Christian Hospital Bissamcuttack. | Plain-language matching · PIN location · tiers then distance · Confirmed 143 km (MKCG) vs Likely 7.8 km · "call the Likely ones first" banner · map arrow + distance · quoted evidence + source column · "Why this result" checklist · Call / Directions / Website · district panel (72% skilled birth attendance, 36th lowest of 706) |
-| 2 | **Thanjavur, C-section** | Service box: type *"caesar"* → C-section. PIN **613001**. | Synonym search · **district hint**: 51% of births by caesarean, nearest Confirmed 108 km, so it lists nearby maternity hospitals (Meenakshi, Vinodhagan) to call · tiers unchanged |
-| 2b | **Thanjavur, dialysis** | Switch service to Dialysis, same PIN. | Confirmed nearby: Sudar Hospital, under 1 km · district panel shows high blood sugar (7th highest) |
-| 3 | **Villupuram, dialysis** | PIN **605602**. Open Aravind Eye Hospital in Unverified. | Mixed-record check: nearest result (1.1 km) is an eye hospital whose record carries text copied from other hospitals; it lands in Unverified with a warning, below East Coast Hospital (Possible, 31 km) · uncertain-location warning (its city says Hyderabad, PIN says Delhi, coordinates say Villupuram) |
-| 4 | **Gumla, dialysis** | Place box: type *"Gumla"* (or click the map). | Place-name search / map click · rural gap: Likely 81 km vs Confirmed 87 km, both shown and labelled |
-| 5 | **Not sure what to ask** | Type *"I can't jump"*, then *"numb left arm and can't breathe"*. | Symptom → 2–3 options with reasons, least invasive first, user picks · emergency warning: call 108 / 112 |
-| — | Close | Click "How this works". Toggle light/dark. | Method in plain words · theme |
+| 0:00–0:15 | App, empty | — | A health worker needs the nearest place for a service. 10,000 facility records, scraped and messy: every field is a claim, not a fact. |
+| 0:15–1:00 | **Rayagada NICU** | Type *"my newborn baby needs intensive care"* → NICU. PIN **765019**. Click Christian Hospital Bissamcuttack. | Plain words become a service. Results by tier, then distance. Nearest Confirmed is 143 km; a Likely hospital is 7.8 km, so the app says call it first. Arrow + distance. Its own sentence: *"Neonatal incubators introduced…"*. Why-this-result checklist, call, directions. District panel: 72% skilled birth attendance, 36th lowest in India. |
+| 1:00–1:30 | **Thanjavur C-section** | Service box *"caesar"*. PIN **613001**. | No nearby website mentions C-sections, yet 51% of births here are caesarean. The app uses district data as a hint: these maternity hospitals nearby, call to check. It never changes a tier. |
+| 1:30–1:55 | **Villupuram dialysis** | Service Dialysis, PIN **605602**. Open Aravind Eye Hospital. | A keyword search sends this patient to an eye hospital 1.1 km away: its record carries text copied from other hospitals. We check every record's text belongs to it, so it lands in Unverified with a warning. |
+| 1:55–2:10 | **Emergency** | Type *"numb left arm and can't breathe"*. | It recognises an emergency and says call 108 / 112 first. |
+| 2:10–2:30 | How this works | Open the panel. | HOW: an LLM tags 450k sentences once; tiers from evidence, ownership check and facility type; blind web checks: every Confirmed we could verify was right (30 of 30). Runs entirely on Databricks Free Edition. |
 
-Talking points
-- WHY: every card quotes the facility's own sentences and lists its warnings.
-- HOW: tier first (Confirmed / Likely / Possible / Unverified), then distance; a nearby weak claim never outranks a confirmed one, but it is never hidden either.
-- Honesty: district data only *suggests* places to call; it never changes a tier.
+Cut if over time: the emergency beat first, then the district panel line in Rayagada.
+Backup stories (not in the video): Thanjavur dialysis (Sudar, Confirmed <1 km), Gumla dialysis (Likely 81 km vs Confirmed 87 km), "I can't jump" (symptom → options).
