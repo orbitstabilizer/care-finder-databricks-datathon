@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the tables, then deploy the app. One script, both halves.
-#   usage: deploy/deploy.sh [--sql-only | --app-only]
+#   usage: scripts/deploy.sh [--sql-only | --app-only]
 set -euo pipefail
 
 PROFILE="${DATABRICKS_PROFILE:-datathon}"
@@ -17,7 +17,7 @@ q() { databricks experimental aitools tools query "$1" --profile "$PROFILE" >/de
 if [[ "$MODE" != "--app-only" ]]; then
   echo "== building tables"
   DATABRICKS_CONFIG_PROFILE="$PROFILE" DATABRICKS_WAREHOUSE_ID="$WAREHOUSE_ID" \
-    "$PYTHON" "$ROOT/deploy/run_sql.py"
+    "$PYTHON" "$ROOT/scripts/run_sql.py"
 fi
 
 if [[ "$MODE" == "--sql-only" ]]; then exit 0; fi

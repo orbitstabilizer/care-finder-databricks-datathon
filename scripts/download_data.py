@@ -1,6 +1,6 @@
 """Download the Virtue Foundation datathon tables from Databricks to local Parquet.
 
-Usage:  .venv/bin/python download_data.py
+Usage:  python scripts/download_data.py
 Re-run any time; it overwrites data/*.parquet.
 """
 
@@ -21,7 +21,7 @@ TABLES = [
     "nfhs_5_district_health_indicators",
 ]
 
-OUT = pathlib.Path(__file__).parent / "data"
+OUT = pathlib.Path(__file__).resolve().parent.parent / "data"
 
 
 def access_token() -> str:

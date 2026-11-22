@@ -12,7 +12,7 @@ databricks apps deploy vf-locator \
 databricks apps logs vf-locator --profile datathon | grep PROBE   # verify
 ```
 
-(`deploy/deploy.sh --app-only` does the same plus grants.) The app service principal has
+(`scripts/deploy.sh --app-only` does the same plus grants.) The app service principal has
 `USE CATALOG workspace`, `USE SCHEMA, SELECT, EXECUTE` on `workspace.vf`, and `CAN_USE` on
 warehouse `8ea2282aca435351` (app resource `sql-warehouse`).
 
