@@ -1,0 +1,7 @@
+{"stage": "stage0", "label": "create_pa_prompt", "start": "2026-11-22T01:10:42.300+00:00", "end": "2026-11-22T01:10:43.858+00:00", "seconds": 1.557}
+{"stage": "stage0", "label": "upsert_pa_prompt", "start": "2026-11-22T01:10:43.858+00:00", "end": "2026-11-22T01:10:45.359+00:00", "seconds": 1.501}
+{"stage": "stage0", "label": "create_pa_results", "start": "2026-11-22T01:10:45.359+00:00", "end": "2026-11-22T01:10:46.746+00:00", "seconds": 1.387}
+{"stage": "stage0", "label": "create_pa_statements", "start": "2026-11-22T01:10:46.746+00:00", "end": "2026-11-22T01:10:48.161+00:00", "seconds": 1.415}
+{"stage": "stage0", "label": "create_pa_sample", "start": "2026-11-22T01:10:48.161+00:00", "end": "2026-11-22T01:10:50.574+00:00", "seconds": 2.413}
+{"stage": "stage0", "label": "read_pa_sample", "start": "2026-11-22T01:10:50.575+00:00", "end": "2026-11-22T01:10:50.968+00:00", "seconds": 0.394}
+{"stage": "stage0", "label": "s0_bs25_b000", "start": "2026-11-22T01:10:50.969+00:00", "end": "2026-11-22T01:11:20.491+00:00", "seconds": 29.522}

@@ -1,0 +1,4 @@
+command: ["bash", "-c", "python startup_probe.py; streamlit run app.py"]
+env:
+  - name: DATABRICKS_WAREHOUSE_ID
+    valueFrom: sql-warehouse

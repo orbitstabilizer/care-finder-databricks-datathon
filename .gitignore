@@ -1,0 +1,9 @@
+.venv/
+.databricks/
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+
+# 31 MB of parquet pulled down for local inspection; the working copy of the
+# data lives on Databricks, not here.
+data/
